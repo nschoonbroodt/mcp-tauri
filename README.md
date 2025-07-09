@@ -1,60 +1,41 @@
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/angiejones-mcp-selenium-badge.png)](https://mseep.ai/app/angiejones-mcp-selenium)
+# MCP Tauri WebDriver Server
 
-# MCP Selenium Server
+A Model Context Protocol (MCP) server implementation for Tauri applications using tauri-driver, enabling desktop application automation through standardized MCP clients.
 
-<a href="https://glama.ai/mcp/servers/s2em7b2kwf">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/s2em7b2kwf/badge" />
-</a>
+## Attribution
 
-[![smithery badge](https://smithery.ai/badge/@angiejones/mcp-selenium)](https://smithery.ai/server/@angiejones/mcp-selenium)
-
-A Model Context Protocol (MCP) server implementation for Selenium WebDriver, enabling browser automation through standardized MCP clients.
-
-## Video Demo (Click to Watch)
-
-[![Watch the video](https://img.youtube.com/vi/mRV0N8hcgYA/sddefault.jpg)](https://youtu.be/mRV0N8hcgYA)
-
+This project is based on [MCP Selenium Server](https://github.com/angiejones/mcp-selenium) by Angie Jones. The original codebase provided the foundation and MCP protocol implementation, which has been adapted for Tauri desktop application automation using tauri-driver.
 
 ## Features
 
-- Start browser sessions with customizable options
-- Navigate to URLs
+- Start Tauri application sessions with customizable options
+- Navigate within applications
 - Find elements using various locator strategies
 - Click, type, and interact with elements
 - Perform mouse actions (hover, drag and drop)
 - Handle keyboard input
 - Take screenshots
 - Upload files
-- Support for headless mode
 
-## Supported Browsers
+## Prerequisites
 
-- Chrome
-- Firefox
+Before using this MCP server, you need to install tauri-driver:
 
-## Use with Goose
-
-### Option 1: One-click install
-Copy and paste the link below into a browser address bar to add this extension to goose desktop:
-
-```
-goose://extension?cmd=npx&arg=-y&arg=%40angiejones%2Fmcp-selenium&id=selenium-mcp&name=Selenium%20MCP&description=automates%20browser%20interactions
+```bash
+cargo install tauri-driver --locked
 ```
 
+For more information, see the [tauri-driver documentation](https://crates.io/crates/tauri-driver).
 
-### Option 2: Add manually to desktop or CLI
-
-* Name: `Selenium MCP`
-* Description: `automates browser interactions`
-* Command: `npx -y @angiejones/mcp-selenium`
+---
 
 ## Use with other MCP clients (e.g. Claude Desktop, etc)
 ```json
 {
   "mcpServers": {
-    "selenium": {
+    "tauri": {
       "command": "npx",
-      "args": ["-y", "@angiejones/mcp-selenium"]
+      "args": ["-y", "mcp-tauri-webdriver"]
     }
   }
 }
@@ -72,26 +53,17 @@ To work on this project:
 
 ### Installation
 
-#### Installing via Smithery
-
-To install MCP Selenium for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@angiejones/mcp-selenium):
-
-```bash
-npx -y @smithery/cli install @angiejones/mcp-selenium --client claude
-```
-
 #### Manual Installation
 ```bash
-npm install -g @angiejones/mcp-selenium
+npm install -g mcp-tauri-webdriver
 ```
-
 
 ### Usage
 
 Start the server by running:
 
 ```bash
-mcp-selenium
+mcp-tauri-webdriver
 ```
 
 Or use with NPX in your MCP configuration:
@@ -99,52 +71,46 @@ Or use with NPX in your MCP configuration:
 ```json
 {
   "mcpServers": {
-    "selenium": {
+    "tauri": {
       "command": "npx",
       "args": [
         "-y",
-        "@angiejones/mcp-selenium"
+        "mcp-tauri-webdriver"
       ]
     }
   }
 }
 ```
 
-
-
 ## Tools
 
-### start_browser
-Launches a browser session.
+### start_app
+Launches a Tauri application session.
 
 **Parameters:**
-- `browser` (required): Browser to launch
+- `app_path` (required): Path to the Tauri application
   - Type: string
-  - Enum: ["chrome", "firefox"]
-- `options`: Browser configuration options
+- `options`: Application configuration options
   - Type: object
   - Properties:
-    - `headless`: Run browser in headless mode
-      - Type: boolean
-    - `arguments`: Additional browser arguments
+    - `arguments`: Additional application arguments
       - Type: array of strings
 
 **Example:**
 ```json
 {
-  "tool": "start_browser",
+  "tool": "start_app",
   "parameters": {
-    "browser": "chrome",
+    "app_path": "/path/to/tauri/app",
     "options": {
-      "headless": true,
-      "arguments": ["--no-sandbox"]
+      "arguments": ["--debug"]
     }
   }
 }
 ```
 
 ### navigate
-Navigates to a URL.
+Navigates to a URL within the application.
 
 **Parameters:**
 - `url` (required): URL to navigate to
@@ -155,7 +121,7 @@ Navigates to a URL.
 {
   "tool": "navigate",
   "parameters": {
-    "url": "https://www.example.com"
+    "url": "https://localhost:1420/dashboard"
   }
 }
 ```
@@ -425,7 +391,7 @@ Captures a screenshot of the current page.
 ```
 
 ### close_session
-Closes the current browser session and cleans up resources.
+Closes the current application session and cleans up resources.
 
 **Parameters:**
 None required
@@ -437,7 +403,6 @@ None required
   "parameters": {}
 }
 ```
-
 
 ## License
 
