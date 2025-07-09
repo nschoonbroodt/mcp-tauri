@@ -1,11 +1,11 @@
 {
-  "name": "@nschoonbroodt/mcp-tauri",
+  "name": "mcp-tauri-webdriver",
   "version": "0.1.0",
   "description": "Tauri WebDriver MCP Server",
   "type": "module",
   "main": "src/lib/server.js",
   "bin": {
-    "mcp-tauri": "./src/lib/server.js"
+    "mcp-tauri-webdriver": "./src/lib/server.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
