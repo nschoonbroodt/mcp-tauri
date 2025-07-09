@@ -1,18 +1,24 @@
 {
-  "name": "@angiejones/mcp-selenium",
-  "version": "0.1.21",
-  "description": "Selenium WebDriver MCP Server",
+  "name": "@nschoonbroodt/mcp-tauri",
+  "version": "0.1.0",
+  "description": "Tauri WebDriver MCP Server",
   "type": "module",
   "main": "src/lib/server.js",
   "bin": {
-    "mcp-selenium": "./src/lib/server.js"
+    "mcp-tauri": "./src/lib/server.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "tauri",
+    "webdriver",
+    "mcp",
+    "automation",
+    "testing"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.7.0",
     "selenium-webdriver": "^4.18.1"
