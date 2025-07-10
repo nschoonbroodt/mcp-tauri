@@ -39,6 +39,8 @@ const getLocator = (by, value) => {
         case 'name': return By.name(value);
         case 'tag': return By.css(value);
         case 'class': return By.className(value);
+        case 'linktext': return By.linkText(value);
+        case 'partiallinktext': return By.partialLinkText(value);
         default: throw new Error(`Unsupported locator strategy: ${by}`);
     }
 };
@@ -61,7 +63,7 @@ const startTauriDriver = async (port = 4444) => {
 
 // Common schemas
 const locatorSchema = {
-    by: z.enum(["id", "css", "xpath", "name", "tag", "class"]).describe("Locator strategy to find element"),
+    by: z.enum(["id", "css", "xpath", "name", "tag", "class", "linkText", "partialLinkText"]).describe("Locator strategy to find element"),
     value: z.string().describe("Value for the locator strategy"),
     timeout: z.number().optional().describe("Maximum time to wait for element in milliseconds")
 };
@@ -251,7 +253,7 @@ server.tool(
     "drags an element and drops it onto another element",
     {
         ...locatorSchema,
-        targetBy: z.enum(["id", "css", "xpath", "name", "tag", "class"]).describe("Locator strategy to find target element"),
+        targetBy: z.enum(["id", "css", "xpath", "name", "tag", "class", "linkText", "partialLinkText"]).describe("Locator strategy to find target element"),
         targetValue: z.string().describe("Value for the target locator strategy")
     },
     async ({ by, value, targetBy, targetValue, timeout = 10000 }) => {
