@@ -45,3 +45,7 @@ npm-debug.log*
 geckodriver.log
 chromedriver.log
 .goose/
+
+# claude
+logs/
+.claude
