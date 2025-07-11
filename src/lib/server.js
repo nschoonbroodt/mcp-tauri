@@ -186,7 +186,7 @@ server.tool(
     async ({ url }) => {
         try {
             const driver = getDriver();
-            
+
             // Validate URL format
             try {
                 const urlObj = new URL(url);
@@ -202,7 +202,7 @@ server.tool(
                     content: [{ type: 'text', text: `Error navigating: Invalid URL format: ${url}` }]
                 };
             }
-            
+
             await driver.get(url);
             return {
                 content: [{ type: 'text', text: `Navigated to ${url}` }]
@@ -272,6 +272,109 @@ server.tool(
     }
 );
 
+// Window and Tab Management Tools
+
+
+server.tool(
+    "maximize_window",
+    "maximizes the current window",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.manage().window().maximize();
+            return {
+                content: [{ type: 'text', text: 'Window maximized' }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error maximizing window: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "minimize_window",
+    "minimizes the current window",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.manage().window().minimize();
+            return {
+                content: [{ type: 'text', text: 'Window minimized' }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error minimizing window: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "set_window_size",
+    "sets the window size",
+    {
+        width: z.number().describe("Window width in pixels"),
+        height: z.number().describe("Window height in pixels")
+    },
+    async ({ width, height }) => {
+        try {
+            const driver = getDriver();
+            await driver.manage().window().setRect({ width, height });
+            return {
+                content: [{ type: 'text', text: `Window size set to ${width}x${height}` }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error setting window size: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "set_window_position",
+    "sets the window position",
+    {
+        x: z.number().describe("X coordinate"),
+        y: z.number().describe("Y coordinate")
+    },
+    async ({ x, y }) => {
+        try {
+            const driver = getDriver();
+            await driver.manage().window().setRect({ x, y });
+            return {
+                content: [{ type: 'text', text: `Window position set to (${x}, ${y})` }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error setting window position: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "get_window_rect",
+    "gets the window position and size",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            const rect = await driver.manage().window().getRect();
+            return {
+                content: [{ type: 'text', text: `Window rect: x=${rect.x}, y=${rect.y}, width=${rect.width}, height=${rect.height}` }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error getting window rect: ${e.message}` }]
+            };
+        }
+    }
+);
 
 
 // Untested tools below
@@ -522,207 +625,6 @@ server.tool(
 );
 
 
-// Window and Tab Management Tools
-server.tool(
-    "get_window_handle",
-    "gets the current window handle",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            const handle = await driver.getWindowHandle();
-            return {
-                content: [{ type: 'text', text: `Current window handle: ${handle}` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error getting window handle: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "get_all_window_handles",
-    "gets all window handles",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            const handles = await driver.getAllWindowHandles();
-            return {
-                content: [{ type: 'text', text: `All window handles: ${handles.join(', ')}` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error getting window handles: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "switch_to_window",
-    "switches to a specific window by handle",
-    {
-        handle: z.string().describe("Window handle to switch to")
-    },
-    async ({ handle }) => {
-        try {
-            const driver = getDriver();
-            await driver.switchTo().window(handle);
-            return {
-                content: [{ type: 'text', text: `Switched to window: ${handle}` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error switching to window: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "new_window",
-    "opens a new window or tab",
-    {
-        type: z.enum(["tab", "window"]).optional().describe("Type of new window to open")
-    },
-    async ({ type = "tab" }) => {
-        try {
-            const driver = getDriver();
-            await driver.switchTo().newWindow(type);
-            const handle = await driver.getWindowHandle();
-            return {
-                content: [{ type: 'text', text: `New ${type} opened with handle: ${handle}` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error opening new ${type}: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "close_window",
-    "closes the current window",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.close();
-            return {
-                content: [{ type: 'text', text: 'Current window closed' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error closing window: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "maximize_window",
-    "maximizes the current window",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.manage().window().maximize();
-            return {
-                content: [{ type: 'text', text: 'Window maximized' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error maximizing window: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "minimize_window",
-    "minimizes the current window",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.manage().window().minimize();
-            return {
-                content: [{ type: 'text', text: 'Window minimized' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error minimizing window: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "set_window_size",
-    "sets the window size",
-    {
-        width: z.number().describe("Window width in pixels"),
-        height: z.number().describe("Window height in pixels")
-    },
-    async ({ width, height }) => {
-        try {
-            const driver = getDriver();
-            await driver.manage().window().setRect({ width, height });
-            return {
-                content: [{ type: 'text', text: `Window size set to ${width}x${height}` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error setting window size: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "set_window_position",
-    "sets the window position",
-    {
-        x: z.number().describe("X coordinate"),
-        y: z.number().describe("Y coordinate")
-    },
-    async ({ x, y }) => {
-        try {
-            const driver = getDriver();
-            await driver.manage().window().setRect({ x, y });
-            return {
-                content: [{ type: 'text', text: `Window position set to (${x}, ${y})` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error setting window position: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "get_window_rect",
-    "gets the window position and size",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            const rect = await driver.manage().window().getRect();
-            return {
-                content: [{ type: 'text', text: `Window rect: x=${rect.x}, y=${rect.y}, width=${rect.width}, height=${rect.height}` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error getting window rect: ${e.message}` }]
-            };
-        }
-    }
-);
 
 // Frame Management Tools
 server.tool(
