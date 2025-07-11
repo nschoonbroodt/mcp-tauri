@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Element Properties Test Page</title>
+    <style>
+        .styled-element {
+            color: red;
+            font-size: 16px;
+            margin: 10px;
+            padding: 5px;
+            border: 2px solid blue;
+            background-color: lightgray;
+            width: 200px;
+            height: 100px;
+        }
+        .hidden-element {
+            display: none;
+        }
+        .visible-element {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Element Properties Testing</h1>
+    
+    <!-- Text Content Elements -->
+    <section>
+        <h2>Text Content</h2>
+        <p id="text-para">This is sample text content</p>
+        <div id="empty-div"></div>
+        <span id="whitespace-span">   Text with whitespace   </span>
+        <div id="multiline-div">First line<br>Second line<br>Third line</div>
+        <div id="nested-text"><span>Nested</span> <strong>text</strong> content</div>
+    </section>
+    
+    <!-- Attribute Elements -->
+    <section>
+        <h2>Attributes</h2>
+        <input id="text-input" type="text" value="default value" placeholder="Enter text" data-custom="custom-value" class="form-control" required>
+        <img id="test-image" src="test.png" alt="Test Image" width="100" height="50" data-info="image-data">
+        <a id="test-link" href="https://example.com" title="Example Link" target="_blank">Link</a>
+        <div id="custom-attrs" data-testid="element-123" data-role="button" aria-label="Custom Element"></div>
+    </section>
+    
+    <!-- State Elements -->
+    <section>
+        <h2>Element States</h2>
+        <button id="enabled-btn">Enabled Button</button>
+        <button id="disabled-btn" disabled>Disabled Button</button>
+        <div id="hidden-div" class="hidden-element">Hidden Content</div>
+        <div id="visible-div" class="visible-element">Visible Content</div>
+        <input id="readonly-input" type="text" value="readonly" readonly>
+    </section>
+    
+    <!-- Form Controls for Selection State -->
+    <section>
+        <h2>Form Control States</h2>
+        <input type="checkbox" id="unchecked-box" value="checkbox1">
+        <label for="unchecked-box">Unchecked Box</label><br>
+        
+        <input type="checkbox" id="checked-box" value="checkbox2" checked>
+        <label for="checked-box">Checked Box</label><br>
+        
+        <input type="radio" id="radio1" name="radiogroup" value="option1">
+        <label for="radio1">Radio Option 1</label><br>
+        
+        <input type="radio" id="radio2" name="radiogroup" value="option2" checked>
+        <label for="radio2">Radio Option 2 (Selected)</label><br>
+        
+        <select id="selection-test">
+            <option value="opt1">Option 1</option>
+            <option value="opt2" selected>Option 2 (Selected)</option>
+            <option value="opt3">Option 3</option>
+        </select>
+    </section>
+    
+    <!-- Styled Elements for CSS Values -->
+    <section>
+        <h2>Styled Elements</h2>
+        <div id="styled-div" class="styled-element">Styled Element</div>
+        <div id="inline-styled" style="color: green; font-weight: bold; text-align: center;">Inline Styled</div>
+        <span id="font-element" style="font-family: Arial; font-size: 14px;">Font Element</span>
+    </section>
+    
+    <!-- Different HTML Tags -->
+    <section>
+        <h2>Various HTML Tags</h2>
+        <h3 id="heading-tag">Heading Tag</h3>
+        <table id="table-tag">
+            <tr><td id="cell-tag">Table Cell</td></tr>
+        </table>
+        <ul id="list-tag">
+            <li id="list-item-tag">List Item</li>
+        </ul>
+        <canvas id="canvas-tag" width="50" height="30"></canvas>
+        <video id="video-tag" width="100" height="60"></video>
+    </section>
+    
+    <!-- Elements for Size and Position Testing -->
+    <section>
+        <h2>Size and Position</h2>
+        <div id="positioned-element" style="position: absolute; top: 50px; left: 100px; width: 150px; height: 75px; background: yellow;">
+            Positioned Element
+        </div>
+        <div id="large-element" style="width: 300px; height: 200px; background: lightblue; margin: 20px;">
+            Large Element
+        </div>
+        <span id="small-element" style="display: inline-block; width: 10px; height: 10px; background: red;"></span>
+    </section>
+    
+    <!-- Dynamic Content for Testing -->
+    <section>
+        <h2>Dynamic Content</h2>
+        <button onclick="toggleVisibility()">Toggle Hidden Element</button>
+        <button onclick="changeAttributes()">Change Attributes</button>
+        <div id="dynamic-element" data-dynamic="initial">Dynamic Element</div>
+    </section>
+    
+    <script>
+        function toggleVisibility() {
+            const element = document.getElementById('dynamic-element');
+            element.style.display = element.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function changeAttributes() {
+            const element = document.getElementById('dynamic-element');
+            element.setAttribute('data-dynamic', 'changed');
+            element.textContent = 'Changed Dynamic Element';
+            element.style.color = 'purple';
+        }
+    </script>
+</body>
+</html>

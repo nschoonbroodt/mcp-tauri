@@ -1084,9 +1084,9 @@ server.tool(
             const driver = getDriver();
             const locator = getLocator(by, value);
             const element = await driver.wait(until.elementLocated(locator), timeout);
-            const size = await element.getSize();   // TODO: Bug with tauri, or maybe in general
+            const rect = await element.getRect();
             return {
-                content: [{ type: 'text', text: `Element size: width=${size.width}, height=${size.height}` }]
+                content: [{ type: 'text', text: `Element size: width=${rect.width}, height=${rect.height}` }]
             };
         } catch (e) {
             return {
@@ -1107,9 +1107,9 @@ server.tool(
             const driver = getDriver();
             const locator = getLocator(by, value);
             const element = await driver.wait(until.elementLocated(locator), timeout);
-            const location = await element.getLocation();
+            const rect = await element.getRect();
             return {
-                content: [{ type: 'text', text: `Element location: x=${location.x}, y=${location.y}` }]
+                content: [{ type: 'text', text: `Element location: x=${rect.x}, y=${rect.y}` }]
             };
         } catch (e) {
             return {
