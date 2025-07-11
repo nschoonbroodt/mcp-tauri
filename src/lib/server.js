@@ -68,6 +68,10 @@ const locatorSchema = {
     timeout: z.number().optional().describe("Maximum time to wait for element in milliseconds")
 };
 
+// Tested tools
+
+// I'm trying to keep some sort of "priority list", but still keep related things together
+
 // Browser Management Tools
 server.tool(
     "start_tauri_app",
@@ -108,6 +112,41 @@ server.tool(
     }
 );
 
+
+server.tool(
+    "take_screenshot",
+    "captures a screenshot of the current page",
+    {
+        outputPath: z.string().optional().describe("Optional path where to save the screenshot. If not provided, returns base64 data.")
+    },
+    async ({ outputPath }) => {
+        try {
+            const driver = getDriver();
+            const screenshot = await driver.takeScreenshot();
+
+            if (outputPath) {
+                const fs = await import('fs');
+                await fs.promises.writeFile(outputPath, screenshot, 'base64');
+                return {
+                    content: [{ type: 'text', text: `Screenshot saved to ${outputPath}` }]
+                };
+            } else {
+                return {
+                    content: [
+                        { type: 'text', text: 'Screenshot captured as base64:' },
+                        { type: 'text', text: screenshot }
+                    ]
+                };
+            }
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error taking screenshot: ${e.message}` }]
+            };
+        }
+    }
+);
+
+
 server.tool(
     "navigate",
     "navigates to a URL",
@@ -129,6 +168,91 @@ server.tool(
         }
     }
 );
+
+// Navigation Tools
+server.tool(
+    "go_back",
+    "navigates back in browser history",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.navigate().back();
+            return {
+                content: [{ type: 'text', text: 'Navigated back' }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error navigating back: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "go_forward",
+    "navigates forward in browser history",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.navigate().forward();
+            return {
+                content: [{ type: 'text', text: 'Navigated forward' }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error navigating forward: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "refresh_page",
+    "refreshes the current page",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.navigate().refresh();
+            return {
+                content: [{ type: 'text', text: 'Page refreshed' }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error refreshing page: ${e.message}` }]
+            };
+        }
+    }
+);
+
+
+server.tool(
+    "close_session",
+    "closes the current Tauri session",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.quit();
+            state.drivers.delete(state.currentSession);
+            const sessionId = state.currentSession;
+            state.currentSession = null;
+            return {
+                content: [{ type: 'text', text: `Tauri session ${sessionId} closed` }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error closing session: ${e.message}` }]
+            };
+        }
+    }
+);
+
+// Untested tools below
+
+
 
 // Element Interaction Tools
 server.tool(
@@ -373,60 +497,6 @@ server.tool(
     }
 );
 
-server.tool(
-    "take_screenshot",
-    "captures a screenshot of the current page",
-    {
-        outputPath: z.string().optional().describe("Optional path where to save the screenshot. If not provided, returns base64 data.")
-    },
-    async ({ outputPath }) => {
-        try {
-            const driver = getDriver();
-            const screenshot = await driver.takeScreenshot();
-
-            if (outputPath) {
-                const fs = await import('fs');
-                await fs.promises.writeFile(outputPath, screenshot, 'base64');
-                return {
-                    content: [{ type: 'text', text: `Screenshot saved to ${outputPath}` }]
-                };
-            } else {
-                return {
-                    content: [
-                        { type: 'text', text: 'Screenshot captured as base64:' },
-                        { type: 'text', text: screenshot }
-                    ]
-                };
-            }
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error taking screenshot: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "close_session",
-    "closes the current Tauri session",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.quit();
-            state.drivers.delete(state.currentSession);
-            const sessionId = state.currentSession;
-            state.currentSession = null;
-            return {
-                content: [{ type: 'text', text: `Tauri session ${sessionId} closed` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error closing session: ${e.message}` }]
-            };
-        }
-    }
-);
 
 // Window and Tab Management Tools
 server.tool(
@@ -777,63 +847,6 @@ server.tool(
     }
 );
 
-// Navigation Tools
-server.tool(
-    "go_back",
-    "navigates back in browser history",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.navigate().back();
-            return {
-                content: [{ type: 'text', text: 'Navigated back' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error navigating back: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "go_forward",
-    "navigates forward in browser history",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.navigate().forward();
-            return {
-                content: [{ type: 'text', text: 'Navigated forward' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error navigating forward: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "refresh_page",
-    "refreshes the current page",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.navigate().refresh();
-            return {
-                content: [{ type: 'text', text: 'Page refreshed' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error refreshing page: ${e.message}` }]
-            };
-        }
-    }
-);
 
 server.tool(
     "get_current_url",
