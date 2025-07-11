@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wait Dynamic Test Page</title>
+</head>
+<body>
+    <h1>Dynamic Content Testing</h1>
+    
+    <!-- Element Visibility Testing -->
+    <button id="show-btn" onclick="showElement()">Show Hidden Element</button>
+    <button id="hide-btn" onclick="hideElement()">Hide Element</button>
+    <div id="dynamic-element" style="display:none">Dynamic Content</div>
+    
+    <!-- Element Clickability Testing -->
+    <button id="disabled-btn" disabled>Disabled Button</button>
+    <button id="enable-btn" onclick="enableButton()">Enable Button</button>
+    
+    <!-- Delayed Actions for Testing -->
+    <button id="delayed-show-btn" onclick="delayedShow()">Show After Delay</button>
+    <div id="delayed-element" style="display:none">Delayed Content</div>
+    
+    <script>
+        function showElement() {
+            // Add 1 second delay to test wait functionality
+            setTimeout(() => {
+                document.getElementById('dynamic-element').style.display = 'block';
+            }, 1000);
+        }
+        
+        function hideElement() {
+            // Add 1 second delay to test wait functionality  
+            setTimeout(() => {
+                document.getElementById('dynamic-element').style.display = 'none';
+            }, 1000);
+        }
+        
+        function enableButton() {
+            // Add 1 second delay to test wait functionality
+            setTimeout(() => {
+                document.getElementById('disabled-btn').disabled = false;
+            }, 1000);
+        }
+        
+        function delayedShow() {
+            // Longer delay for specific delay testing
+            setTimeout(() => {
+                document.getElementById('delayed-element').style.display = 'block';
+            }, 3000); // 3 second delay
+        }
+    </script>
+</body>
+</html>

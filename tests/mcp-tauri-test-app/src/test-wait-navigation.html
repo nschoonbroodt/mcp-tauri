@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wait Navigation Test Page</title>
+</head>
+<body>
+    <h1>Title and URL Testing</h1>
+    
+    <!-- Title Change Testing -->
+    <button id="change-title-btn" onclick="changeTitle()">Change Title</button>
+    <button id="delayed-title-btn" onclick="delayedTitleChange()">Change Title After Delay</button>
+    
+    <!-- URL Change Testing -->
+    <button id="change-url-btn" onclick="changeUrl()">Change URL Hash</button>
+    <button id="delayed-url-btn" onclick="delayedUrlChange()">Change URL After Delay</button>
+    
+    <!-- Current state display -->
+    <p>Current Title: <span id="current-title"></span></p>
+    <p>Current URL: <span id="current-url"></span></p>
+    
+    <script>
+        function updateDisplay() {
+            document.getElementById('current-title').textContent = document.title;
+            document.getElementById('current-url').textContent = window.location.href;
+        }
+        
+        function changeTitle() {
+            // Add 1 second delay to test wait functionality
+            setTimeout(() => {
+                document.title = "New Title Text";
+                updateDisplay();
+            }, 1000);
+        }
+        
+        function delayedTitleChange() {
+            // Longer delay for specific delay testing
+            setTimeout(() => {
+                document.title = "Delayed Title Change";
+                updateDisplay();
+            }, 3000); // 3 second delay
+        }
+        
+        function changeUrl() {
+            // Add 1 second delay to test wait functionality
+            setTimeout(() => {
+                window.location.hash = "#newurl";
+                updateDisplay();
+            }, 1000);
+        }
+        
+        function delayedUrlChange() {
+            // Longer delay for specific delay testing
+            setTimeout(() => {
+                window.location.hash = "#delayedurl";
+                updateDisplay();
+            }, 3000); // 3 second delay
+        }
+        
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>
