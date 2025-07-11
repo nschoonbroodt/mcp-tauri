@@ -10,8 +10,7 @@
   "scripts": {
     "test": "vitest --config ./tests/vitest.config.ts",
     "test:ui": "vitest --config ./tests/vitest.config.ts --ui",
-    "test:run": "vitest --config ./tests/vitest.config.ts run",
-    "test:coverage": "vitest --config ./tests/vitest.config.ts run --coverage"
+    "test:run": "vitest --config ./tests/vitest.config.ts run"
   },
   "keywords": [
     "tauri",
