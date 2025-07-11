@@ -1,16 +1,22 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { MCPTestClient } from 'mcp-test-client';
 import path from 'path';
+import { fdatasyncSync } from 'fs';
 
 describe('MCP Tauri Server', () => {
     let client: MCPTestClient;
-    const TEST_APP_PATH = path.resolve('./tests/mcp-tauri-test-app/src-tauri/target/debug/mcp-tauri-test-app');
+    const TEST_APP_PATH = path.resolve('/home/nicolas/code/mcp-tauri/tests/mcp-tauri-test-app/src-tauri/target/release/bundle/appimage/mcp-tauri-test-app_0.1.0_amd64.AppImage');
 
     beforeAll(async () => {
         // Initialize the MCP test client
         client = new MCPTestClient({
-            serverCommand: 'node',
-            serverArgs: [path.resolve('./src/lib/server.js')],
+            serverCommand: 'env',
+            serverArgs: [
+                `DISPLAY=${process.env.DISPLAY}`,
+                `HOME=${process.env.HOME}`,
+                'node',
+                path.resolve('./src/lib/server.js')
+            ]
         });
         await client.init();
     });
@@ -40,16 +46,14 @@ describe('MCP Tauri Server', () => {
     });
 
     it('should start a Tauri app session', async () => {
-        console.log(TEST_APP_PATH)
         const result = await client.callTool('start_tauri_app', {
             application: TEST_APP_PATH,
         });
-        console.log("Ok!")
-        const x = await client.callTool('close_session', {
+        await client.callTool('close_session', {
             application: TEST_APP_PATH,
         });
         expect(result).toBeDefined();
         expect(result.content[0].text).toContain('Started tauri-driver');
         expect(result.content[0].text).toContain('session_id');
-    }, 120000);
+    });
 });

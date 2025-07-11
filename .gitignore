@@ -46,6 +46,9 @@ geckodriver.log
 chromedriver.log
 .goose/
 
+# tests
+coverage/
+
 # claude
 logs/
 .claude

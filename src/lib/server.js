@@ -53,7 +53,8 @@ const startTauriDriver = async (port = 4444) => {
     const tauriDriverPath = path.resolve(os.homedir(), '.cargo', 'bin', 'tauri-driver');
 
     state.tauriDriver = spawn(tauriDriverPath, ['--port', port.toString()], {
-        stdio: ['ignore', 'pipe', 'pipe']
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: process.env
     });
 
     // wait for the driver to start
@@ -84,7 +85,6 @@ server.tool(
         try {
             // Start tauri-driver automatically
             await startTauriDriver(port);
-            console.log("Tauri driver started")
 
             const tauriDriverUrl = `http://localhost:${port}`;
 
@@ -97,7 +97,6 @@ server.tool(
                 .withCapabilities(capabilities)
                 .usingServer(tauriDriverUrl)
                 .build();
-            console.log("Builder built")
 
             const sessionId = `tauri_${Date.now()}`;
             state.drivers.set(sessionId, driver);
