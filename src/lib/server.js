@@ -46,14 +46,14 @@ const getLocator = (by, value) => {
     }
 };
 
-const startTauriDriver = async (port = 4444, nativePort = 4445) => {
+const startTauriDriver = async (port = 4444) => {
     if (state.tauriDriver) {
         return; // already init
     }
 
     const tauriDriverPath = path.resolve(os.homedir(), '.cargo', 'bin', 'tauri-driver');
 
-    state.tauriDriver = spawn(tauriDriverPath, ['--port', port.toString(), '--native-port', nativePort.toString()], {
+    state.tauriDriver = spawn(tauriDriverPath, ['--port', port.toString()], {
         stdio: ['ignore', 'pipe', 'pipe'],
         env: process.env,
         detached: true  // Create new process group
@@ -84,13 +84,12 @@ server.tool(
     "launches tauri-driver and starts and connects to Tauri application",
     {
         application: z.string().describe("Path to Tauri application binary"),
-        port: z.number().optional().describe("Port for tauri-driver (defaults to 4444)"),
-        nativePort: z.number().optional().describe("Port of the underlying WebDriver (defaults to 4445)")
+        port: z.number().optional().describe("Port for tauri-driver (defaults to 4444)")
     },
-    async ({ application, port = 4444, nativePort = 4445 }) => {
+    async ({ application, port = 4444 }) => {
         try {
             // Start tauri-driver automatically
-            await startTauriDriver(port, nativePort);
+            await startTauriDriver(port);
 
             const tauriDriverUrl = `http://localhost:${port}`;
 
