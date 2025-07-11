@@ -460,6 +460,61 @@ server.tool(
     }
 );
 
+/**
+ * Set Timeouts
+ * Sets timeouts for script, page load, and implicit waits.
+ * W3C Mapping: Session - timeouts.
+ */
+server.tool(
+    "set_timeouts",
+    "sets timeouts for script, page load, and implicit waits",
+    {
+        script: z.number().optional().describe("Script timeout in ms"),
+        pageLoad: z.number().optional().describe("Page load timeout in ms"),
+        implicit: z.number().optional().describe("Implicit wait timeout in ms")
+    },
+    async ({ script, pageLoad, implicit }) => {
+        try {
+            const driver = getDriver();
+            const timeouts = {};
+            if (script !== undefined) timeouts.script = script;
+            if (pageLoad !== undefined) timeouts.pageLoad = pageLoad;
+            if (implicit !== undefined) timeouts.implicit = implicit;
+            await driver.manage().setTimeouts(timeouts);
+            return {
+                content: [{ type: 'text', text: `Timeouts set: ${JSON.stringify(timeouts)}` }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error setting timeouts: ${e.message}` }]
+            };
+        }
+    }
+);
+
+/**
+ * Get Timeouts
+ * Gets the current timeouts for script, page load, and implicit waits.
+ * W3C Mapping: Session - timeouts.
+ */
+server.tool(
+    "get_timeouts",
+    "gets the current timeouts for script, page load, and implicit waits",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            const timeouts = await driver.manage().getTimeouts();
+            return {
+                content: [{ type: 'text', text: JSON.stringify(timeouts) }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error getting timeouts: ${e.message}` }]
+            };
+        }
+    }
+);
 
 // Untested tools below
 
@@ -1505,85 +1560,8 @@ server.tool(
     }
 );
 
-/**
- * Get Session Capabilities
- * Returns the capabilities of the current session.
- * W3C Mapping: Session - capabilities.
- */
-server.tool(
-    "get_capabilities",
-    "gets the capabilities of the current session",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            const caps = await driver.getCapabilities();
-            return {
-                content: [{ type: 'text', text: JSON.stringify(caps, null, 2) }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error getting capabilities: ${e.message}` }]
-            };
-        }
-    }
-);
 
-/**
- * Set Timeouts
- * Sets timeouts for script, page load, and implicit waits.
- * W3C Mapping: Session - timeouts.
- */
-server.tool(
-    "set_timeouts",
-    "sets timeouts for script, page load, and implicit waits",
-    {
-        script: z.number().optional().describe("Script timeout in ms"),
-        pageLoad: z.number().optional().describe("Page load timeout in ms"),
-        implicit: z.number().optional().describe("Implicit wait timeout in ms")
-    },
-    async ({ script, pageLoad, implicit }) => {
-        try {
-            const driver = getDriver();
-            const timeouts = {};
-            if (script !== undefined) timeouts.script = script;
-            if (pageLoad !== undefined) timeouts.pageLoad = pageLoad;
-            if (implicit !== undefined) timeouts.implicit = implicit;
-            await driver.manage().setTimeouts(timeouts);
-            return {
-                content: [{ type: 'text', text: `Timeouts set: ${JSON.stringify(timeouts)}` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error setting timeouts: ${e.message}` }]
-            };
-        }
-    }
-);
 
-/**
- * Get Timeouts
- * Gets the current timeouts for script, page load, and implicit waits.
- * W3C Mapping: Session - timeouts.
- */
-server.tool(
-    "get_timeouts",
-    "gets the current timeouts for script, page load, and implicit waits",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            const timeouts = await driver.manage().getTimeouts();
-            return {
-                content: [{ type: 'text', text: JSON.stringify(timeouts, null, 2) }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error getting timeouts: ${e.message}` }]
-            };
-        }
-    }
-);
 
 
 
