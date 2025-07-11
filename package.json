@@ -8,7 +8,10 @@
     "mcp-tauri-webdriver": "./src/lib/server.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest --config ./tests/vitest.config.ts",
+    "test:ui": "vitest --config ./tests/vitest.config.ts --ui",
+    "test:run": "vitest --config ./tests/vitest.config.ts run",
+    "test:coverage": "vitest --config ./tests/vitest.config.ts run --coverage"
   },
   "keywords": [
     "tauri",
