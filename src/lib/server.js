@@ -376,6 +376,90 @@ server.tool(
     }
 );
 
+// Scroll Actions
+server.tool(
+    "scroll_to_element",
+    "scrolls to an element",
+    {
+        ...locatorSchema
+    },
+    async ({ by, value, timeout = 10000 }) => {
+        try {
+            const driver = getDriver();
+            const locator = getLocator(by, value);
+            const element = await driver.wait(until.elementLocated(locator), timeout);
+            await driver.executeScript("arguments[0].scrollIntoView(true);", element);
+            return {
+                content: [{ type: 'text', text: 'Scrolled to element' }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error scrolling to element: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "scroll_by",
+    "scrolls the page by specified pixels",
+    {
+        x: z.number().describe("Horizontal pixels to scroll"),
+        y: z.number().describe("Vertical pixels to scroll")
+    },
+    async ({ x, y }) => {
+        try {
+            const driver = getDriver();
+            await driver.executeScript(`window.scrollBy(${x}, ${y});`);
+            return {
+                content: [{ type: 'text', text: `Scrolled by x=${x}, y=${y}` }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error scrolling: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "scroll_to_top",
+    "scrolls to the top of the page",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.executeScript("window.scrollTo(0, 0);");
+            return {
+                content: [{ type: 'text', text: 'Scrolled to top of page' }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error scrolling to top: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "scroll_to_bottom",
+    "scrolls to the bottom of the page",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+            return {
+                content: [{ type: 'text', text: 'Scrolled to bottom of page' }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error scrolling to bottom: ${e.message}` }]
+            };
+        }
+    }
+);
+
 
 // Untested tools below
 
@@ -1246,89 +1330,6 @@ server.tool(
     }
 );
 
-// Scroll and Advanced Actions
-server.tool(
-    "scroll_to_element",
-    "scrolls to an element",
-    {
-        ...locatorSchema
-    },
-    async ({ by, value, timeout = 10000 }) => {
-        try {
-            const driver = getDriver();
-            const locator = getLocator(by, value);
-            const element = await driver.wait(until.elementLocated(locator), timeout);
-            await driver.executeScript("arguments[0].scrollIntoView(true);", element);
-            return {
-                content: [{ type: 'text', text: 'Scrolled to element' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error scrolling to element: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "scroll_by",
-    "scrolls the page by specified pixels",
-    {
-        x: z.number().describe("Horizontal pixels to scroll"),
-        y: z.number().describe("Vertical pixels to scroll")
-    },
-    async ({ x, y }) => {
-        try {
-            const driver = getDriver();
-            await driver.executeScript(`window.scrollBy(${x}, ${y});`);
-            return {
-                content: [{ type: 'text', text: `Scrolled by x=${x}, y=${y}` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error scrolling: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "scroll_to_top",
-    "scrolls to the top of the page",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.executeScript("window.scrollTo(0, 0);");
-            return {
-                content: [{ type: 'text', text: 'Scrolled to top of page' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error scrolling to top: ${e.message}` }]
-            };
-        }
-    }
-);
-
-server.tool(
-    "scroll_to_bottom",
-    "scrolls to the bottom of the page",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.executeScript("window.scrollTo(0, document.body.scrollHeight);");
-            return {
-                content: [{ type: 'text', text: 'Scrolled to bottom of page' }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error scrolling to bottom: ${e.message}` }]
-            };
-        }
-    }
-);
 
 // Select dropdown tools
 server.tool(
