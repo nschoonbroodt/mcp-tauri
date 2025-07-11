@@ -46,14 +46,14 @@ const getLocator = (by, value) => {
     }
 };
 
-const startTauriDriver = async (port = 4444) => {
+const startTauriDriver = async (port = 4444, nativePort = 4445) => {
     if (state.tauriDriver) {
         return; // already init
     }
 
     const tauriDriverPath = path.resolve(os.homedir(), '.cargo', 'bin', 'tauri-driver');
 
-    state.tauriDriver = spawn(tauriDriverPath, ['--port', port.toString()], {
+    state.tauriDriver = spawn(tauriDriverPath, ['--port', port.toString(), '--native-port', nativePort.toString()], {
         stdio: ['ignore', 'pipe', 'pipe'],
         env: process.env,
         detached: true  // Create new process group
@@ -81,15 +81,16 @@ const locatorSchema = {
 // Browser Management Tools
 server.tool(
     "start_tauri_app",
-    "launches tauri-driver and connects to Tauri application",
+    "launches tauri-driver and starts and connects to Tauri application",
     {
         application: z.string().describe("Path to Tauri application binary"),
-        port: z.number().optional().describe("Port for tauri-driver (defaults to 4444)")
+        port: z.number().optional().describe("Port for tauri-driver (defaults to 4444)"),
+        nativePort: z.number().optional().describe("Port of the underlying WebDriver (defaults to 4445)")
     },
-    async ({ application, port = 4444 }) => {
+    async ({ application, port = 4444, nativePort = 4445 }) => {
         try {
             // Start tauri-driver automatically
-            await startTauriDriver(port);
+            await startTauriDriver(port, nativePort);
 
             const tauriDriverUrl = `http://localhost:${port}`;
 
@@ -1783,15 +1784,15 @@ async function cleanup() {
         try {
             // First try graceful shutdown
             state.tauriDriver.kill('SIGTERM');
-            
+
             // Give it time to clean up children
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             // If still running, kill the entire process group
             if (!state.tauriDriver.killed) {
                 process.kill(-state.tauriDriverPgid, 'SIGKILL');
             }
-            
+
             state.tauriDriver = null;
             state.tauriDriverPgid = null;
         } catch (e) {
