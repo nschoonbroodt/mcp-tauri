@@ -118,6 +118,28 @@ server.tool(
     }
 );
 
+server.tool(
+    "close_session",
+    "closes the current Tauri session",
+    {},
+    async () => {
+        try {
+            const driver = getDriver();
+            await driver.quit();
+            state.drivers.delete(state.currentSession);
+            const sessionId = state.currentSession;
+            state.currentSession = null;
+            return {
+                content: [{ type: 'text', text: `Tauri session ${sessionId} closed` }]
+            };
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error closing session: ${e.message}` }]
+            };
+        }
+    }
+);
+
 
 server.tool(
     "take_screenshot",
@@ -234,27 +256,6 @@ server.tool(
 );
 
 
-server.tool(
-    "close_session",
-    "closes the current Tauri session",
-    {},
-    async () => {
-        try {
-            const driver = getDriver();
-            await driver.quit();
-            state.drivers.delete(state.currentSession);
-            const sessionId = state.currentSession;
-            state.currentSession = null;
-            return {
-                content: [{ type: 'text', text: `Tauri session ${sessionId} closed` }]
-            };
-        } catch (e) {
-            return {
-                content: [{ type: 'text', text: `Error closing session: ${e.message}` }]
-            };
-        }
-    }
-);
 
 // Untested tools below
 

@@ -11,7 +11,7 @@ export default async function globalSetup() {
 
     // Build the Tauri app
     await new Promise((resolve, reject) => {
-        const build = spawn('npm', ['run', 'tauri', 'build'], {
+        const build = spawn('npm run tauri build', {
             cwd: testAppPath,
             stdio: 'pipe', // Hide output
             shell: true
