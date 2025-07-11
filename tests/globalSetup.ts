@@ -13,7 +13,7 @@ export default async function globalSetup() {
     await new Promise((resolve, reject) => {
         const build = spawn('npm', ['run', 'tauri', 'build'], {
             cwd: testAppPath,
-            stdio: 'inherit',
+            stdio: 'pipe', // Hide output
             shell: true
         });
 
