@@ -20,6 +20,7 @@ const state = {
     drivers: new Map(),
     currentSession: null,
     tauriDriver: null,
+    tauriDriverPgid: null,
 };
 
 // Helper functions
@@ -54,8 +55,12 @@ const startTauriDriver = async (port = 4444) => {
 
     state.tauriDriver = spawn(tauriDriverPath, ['--port', port.toString()], {
         stdio: ['ignore', 'pipe', 'pipe'],
-        env: process.env
+        env: process.env,
+        detached: true  // Create new process group
     });
+
+    // Store the process group ID
+    state.tauriDriverPgid = state.tauriDriver.pid;
 
     // wait for the driver to start
     await new Promise(resolve => setTimeout(resolve, 4000));
@@ -1773,11 +1778,22 @@ async function cleanup() {
     state.drivers.clear();
     state.currentSession = null;
 
-    // Stop tauri-driver
+    // Stop tauri-driver and its children
     if (state.tauriDriver) {
         try {
-            state.tauriDriver.kill();
+            // First try graceful shutdown
+            state.tauriDriver.kill('SIGTERM');
+            
+            // Give it time to clean up children
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // If still running, kill the entire process group
+            if (!state.tauriDriver.killed) {
+                process.kill(-state.tauriDriverPgid, 'SIGKILL');
+            }
+            
             state.tauriDriver = null;
+            state.tauriDriverPgid = null;
         } catch (e) {
             console.error('Error stopping tauri-driver:', e);
         }
@@ -1788,6 +1804,19 @@ async function cleanup() {
 
 process.on('SIGTERM', cleanup);
 process.on('SIGINT', cleanup);
+process.on('beforeExit', cleanup);
+process.on('exit', cleanup);
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    cleanup();
+});
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    cleanup();
+});
+
+process.stdin.on('close', cleanup);
+process.stdin.on('end', cleanup);
 
 // Start the server
 const transport = new StdioServerTransport();

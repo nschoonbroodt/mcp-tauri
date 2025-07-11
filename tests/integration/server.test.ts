@@ -5,7 +5,7 @@ import { fdatasyncSync } from 'fs';
 
 describe('MCP Tauri Server', () => {
     let client: MCPTestClient;
-    const TEST_APP_PATH = path.resolve('/home/nicolas/code/mcp-tauri/tests/mcp-tauri-test-app/src-tauri/target/release/bundle/appimage/mcp-tauri-test-app_0.1.0_amd64.AppImage');
+    const TEST_APP_PATH = path.resolve('./tests/mcp-tauri-test-app/src-tauri/target/release/bundle/appimage/mcp-tauri-test-app_0.1.0_amd64.AppImage');
 
     beforeAll(async () => {
         // Initialize the MCP test client
