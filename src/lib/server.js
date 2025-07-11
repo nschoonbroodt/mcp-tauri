@@ -175,6 +175,7 @@ server.tool(
 );
 
 
+// Navigation Tools
 server.tool(
     "navigate",
     "navigates to a URL",
@@ -185,6 +186,23 @@ server.tool(
     async ({ url }) => {
         try {
             const driver = getDriver();
+            
+            // Validate URL format
+            try {
+                const urlObj = new URL(url);
+                // Only allow http and https protocols
+                if (!['http:', 'https:'].includes(urlObj.protocol)) {
+                    return {
+                        content: [{ type: 'text', text: `Error navigating: Invalid protocol. Only HTTP and HTTPS are supported.` }]
+                    };
+                }
+            } catch (urlError) {
+                // If URL constructor throws, it's not a valid URL
+                return {
+                    content: [{ type: 'text', text: `Error navigating: Invalid URL format: ${url}` }]
+                };
+            }
+            
             await driver.get(url);
             return {
                 content: [{ type: 'text', text: `Navigated to ${url}` }]
@@ -197,7 +215,6 @@ server.tool(
     }
 );
 
-// Navigation Tools
 server.tool(
     "go_back",
     "navigates back in browser history",
