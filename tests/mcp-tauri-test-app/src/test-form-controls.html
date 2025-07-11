@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Controls Test Page</title>
+</head>
+<body>
+    <h1>Form Controls Testing</h1>
+    
+    <!-- Single Select Dropdown -->
+    <h2>Single Select Dropdown</h2>
+    <label for="single-select">Choose an option:</label>
+    <select id="single-select">
+        <option value="">-- Please choose an option --</option>
+        <option value="option1">First Option</option>
+        <option value="option2">Second Option</option>
+        <option value="option3">Third Option</option>
+    </select>
+    
+    <!-- Multi-Select -->
+    <h2>Multi-Select Dropdown</h2>
+    <label for="multi-select">Choose colors (hold Ctrl to select multiple):</label>
+    <select id="multi-select" multiple size="4">
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="yellow">Yellow</option>
+    </select>
+    
+    <!-- Select with Complex Text -->
+    <h2>Countries Dropdown</h2>
+    <label for="countries-select">Choose a country:</label>
+    <select id="countries-select">
+        <option value="">-- Select Country --</option>
+        <option value="us">United States</option>
+        <option value="uk">United Kingdom</option>
+        <option value="fr">France</option>
+        <option value="de">Germany</option>
+        <option value="jp">Japan</option>
+    </select>
+    
+    <!-- Select with Special Characters -->
+    <h2>Special Characters Dropdown</h2>
+    <label for="special-select">Special options:</label>
+    <select id="special-select">
+        <option value="">-- Select --</option>
+        <option value="special1">Option with "quotes"</option>
+        <option value="special2">Option with 'apostrophes'</option>
+        <option value="special3">Option with &amp; symbols</option>
+        <option value="special4">Option with (parentheses)</option>
+    </select>
+    
+    <!-- Large Dropdown for Testing -->
+    <h2>Large Dropdown</h2>
+    <label for="large-select">Many options:</label>
+    <select id="large-select">
+        <option value="">-- Select --</option>
+        <option value="item1">Item 1</option>
+        <option value="item2">Item 2</option>
+        <option value="item3">Item 3</option>
+        <option value="item4">Item 4</option>
+        <option value="item5">Item 5</option>
+        <option value="item6">Item 6</option>
+        <option value="item7">Item 7</option>
+        <option value="item8">Item 8</option>
+        <option value="item9">Item 9</option>
+        <option value="item10">Item 10</option>
+    </select>
+    
+    <!-- Display Selected Values -->
+    <h2>Current Selections</h2>
+    <div id="selections">
+        <p>Single Select: <span id="single-value">None</span></p>
+        <p>Multi Select: <span id="multi-value">None</span></p>
+        <p>Countries: <span id="countries-value">None</span></p>
+        <p>Special: <span id="special-value">None</span></p>
+        <p>Large: <span id="large-value">None</span></p>
+    </div>
+    
+    <script>
+        // Update display when selections change
+        function updateSelections() {
+            // Single select
+            const single = document.getElementById('single-select');
+            document.getElementById('single-value').textContent = 
+                single.value ? `${single.value} (${single.options[single.selectedIndex].text})` : 'None';
+            
+            // Multi select
+            const multi = document.getElementById('multi-select');
+            const multiSelected = Array.from(multi.selectedOptions).map(opt => `${opt.value} (${opt.text})`);
+            document.getElementById('multi-value').textContent = 
+                multiSelected.length ? multiSelected.join(', ') : 'None';
+                
+            // Countries
+            const countries = document.getElementById('countries-select');
+            document.getElementById('countries-value').textContent = 
+                countries.value ? `${countries.value} (${countries.options[countries.selectedIndex].text})` : 'None';
+                
+            // Special
+            const special = document.getElementById('special-select');
+            document.getElementById('special-value').textContent = 
+                special.value ? `${special.value} (${special.options[special.selectedIndex].text})` : 'None';
+                
+            // Large
+            const large = document.getElementById('large-select');
+            document.getElementById('large-value').textContent = 
+                large.value ? `${large.value} (${large.options[large.selectedIndex].text})` : 'None';
+        }
+        
+        // Add event listeners
+        document.getElementById('single-select').addEventListener('change', updateSelections);
+        document.getElementById('multi-select').addEventListener('change', updateSelections);
+        document.getElementById('countries-select').addEventListener('change', updateSelections);
+        document.getElementById('special-select').addEventListener('change', updateSelections);
+        document.getElementById('large-select').addEventListener('change', updateSelections);
+        
+        // Initialize display
+        updateSelections();
+    </script>
+</body>
+</html>
