@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tauri App</title>
+  <script type="module" src="/main.js" defer></script>
+</head>
+
+<body>
+  <!-- Adapted from WebDriver Tests Example from W3C -->
+  <div id="with-children">
+    <p><span></span></p><br />
+  </div>
+  <div id="with-text-node">Lorem</div>
+  <div id="with-comment"><!-- Comment --></div>
+
+  <input id="button" type="button" />
+  <input id="checkbox" type="checkbox" />
+  <input id="file" type="file" />
+  <input id="hidden" type="hidden" />
+  <input id="text" type="text" />
+
+  <img />
+  <svg></svg>
+
+  <script>
+    var svg = document.querySelector("svg");
+    svg.setAttributeNS("http://www.w3.org/2000/svg", "svg:foo", "bar");
+  </script>
+</body>
+
+</html>
