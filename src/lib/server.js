@@ -84,6 +84,7 @@ server.tool(
         try {
             // Start tauri-driver automatically
             await startTauriDriver(port);
+            console.log("Tauri driver started")
 
             const tauriDriverUrl = `http://localhost:${port}`;
 
@@ -96,6 +97,7 @@ server.tool(
                 .withCapabilities(capabilities)
                 .usingServer(tauriDriverUrl)
                 .build();
+            console.log("Builder built")
 
             const sessionId = `tauri_${Date.now()}`;
             state.drivers.set(sessionId, driver);
