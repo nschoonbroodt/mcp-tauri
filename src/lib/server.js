@@ -38,7 +38,6 @@ const getLocator = (by, value) => {
         case 'css': return By.css(value);
         case 'xpath': return By.xpath(value);
         case 'name': return By.name(value);
-        case 'tag': return By.css(value);
         case 'class': return By.className(value);
         case 'linktext': return By.linkText(value);
         case 'partiallinktext': return By.partialLinkText(value);
@@ -69,7 +68,7 @@ const startTauriDriver = async (port = 4444) => {
 
 // Common schemas
 const locatorSchema = {
-    by: z.enum(["id", "css", "xpath", "name", "tag", "class", "linkText", "partialLinkText"]).describe("Locator strategy to find element"),
+    by: z.enum(["id", "css", "xpath", "name", "class", "linkText", "partialLinkText"]).describe("Locator strategy to find element"),
     value: z.string().describe("Value for the locator strategy"),
     timeout: z.number().optional().describe("Maximum time to wait for element in milliseconds")
 };
@@ -190,10 +189,10 @@ server.tool(
             // Validate URL format
             try {
                 const urlObj = new URL(url);
-                // Only allow http and https protocols
-                if (!['http:', 'https:'].includes(urlObj.protocol)) {
+                // Allow http, https, and tauri protocols
+                if (!['http:', 'https:', 'tauri:'].includes(urlObj.protocol)) {
                     return {
-                        content: [{ type: 'text', text: `Error navigating: Invalid protocol. Only HTTP and HTTPS are supported.` }]
+                        content: [{ type: 'text', text: `Error navigating: Invalid protocol. Only HTTP, HTTPS, and tauri:// are supported.` }]
                     };
                 }
             } catch (urlError) {
@@ -643,7 +642,7 @@ server.tool(
     "drags an element and drops it onto another element",
     {
         ...locatorSchema,
-        targetBy: z.enum(["id", "css", "xpath", "name", "tag", "class", "linkText", "partialLinkText"]).describe("Locator strategy to find target element"),
+        targetBy: z.enum(["id", "css", "xpath", "name", "class", "linkText", "partialLinkText"]).describe("Locator strategy to find target element"),
         targetValue: z.string().describe("Value for the target locator strategy")
     },
     async ({ by, value, targetBy, targetValue, timeout = 10000 }) => {

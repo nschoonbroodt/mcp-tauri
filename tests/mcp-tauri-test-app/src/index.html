@@ -5,31 +5,23 @@
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="styles.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tauri App</title>
+  <title>MCP Tauri Test App</title>
   <script type="module" src="/main.js" defer></script>
 </head>
 
 <body>
-  <!-- Adapted from WebDriver Tests Example from W3C -->
-  <div id="with-children">
-    <p><span></span></p><br />
-  </div>
-  <div id="with-text-node">Lorem</div>
-  <div id="with-comment"><!-- Comment --></div>
+  <h1>MCP Tauri Test App</h1>
+  
+  <h2>Test Pages Navigation</h2>
+  <ul>
+    <li><a href="test-button.html">Button Tests</a></li>
+    <li><a href="test-link.html">Link Tests</a></li>
+    <li><a href="test-input.html">Input Tests</a></li>
+    <li><a href="test-form.html">Form Tests</a></li>
+    <li><a href="test-locators.html">Locator Tests</a></li>
+    <li><a href="test-empty.html">Empty Page Tests</a></li>
+  </ul>
 
-  <input id="button" type="button" />
-  <input id="checkbox" type="checkbox" />
-  <input id="file" type="file" />
-  <input id="hidden" type="hidden" />
-  <input id="text" type="text" />
-
-  <img />
-  <svg></svg>
-
-  <script>
-    var svg = document.querySelector("svg");
-    svg.setAttributeNS("http://www.w3.org/2000/svg", "svg:foo", "bar");
-  </script>
 </body>
 
 </html>
