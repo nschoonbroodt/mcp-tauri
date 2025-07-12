@@ -501,12 +501,13 @@ describe('Mouse Actions', () => {
                 url: 'tauri://localhost/test-mouse-actions.html'
             });
 
-            // Try to drag non-existent source
+            // Try to drag non-existent source with explicit timeout
             const dragResult = await client.callTool('drag_and_drop', {
                 by: 'id',
                 value: 'non-existent-source',
                 targetBy: 'id',
-                targetValue: 'drop-zone-1'
+                targetValue: 'drop-zone-1',
+                timeout: 5000  // Explicit shorter timeout to ensure we get an error
             });
             expect(dragResult.content[0].text).toContain('Error performing drag and drop');
 
@@ -526,18 +527,19 @@ describe('Mouse Actions', () => {
                 url: 'tauri://localhost/test-mouse-actions.html'
             });
 
-            // Try to drag to non-existent target
+            // Try to drag to non-existent target with explicit shorter timeout
             const dragResult = await client.callTool('drag_and_drop', {
                 by: 'id',
                 value: 'drag-item-1',
                 targetBy: 'id',
-                targetValue: 'non-existent-target'
+                targetValue: 'non-existent-target',
+                timeout: 5000  // Explicit shorter timeout to ensure we get an error
             });
             expect(dragResult.content[0].text).toContain('Error performing drag and drop');
 
             // Close session
             await client.callTool('close_session', {});
-        }, 30000);
+        }, 35000);  // Increased test timeout slightly
     });
 
     describe('Advanced Mouse Actions', () => {

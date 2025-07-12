@@ -699,11 +699,14 @@ server.tool(
             await driver.wait(until.elementIsVisible(sourceElement), timeout);
             await driver.wait(until.elementIsVisible(targetElement), timeout);
 
-            // Scroll elements into view
-            await driver.executeScript("arguments[0].scrollIntoView(true);", sourceElement);
-            await driver.sleep(100);
-            await driver.executeScript("arguments[0].scrollIntoView(true);", targetElement);
-            await driver.sleep(100);
+            // Scroll elements into view with better positioning
+            // First, scroll source element to center of viewport
+            await driver.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", sourceElement);
+            await driver.sleep(200);
+            
+            // Then scroll target element, but keep source visible if possible
+            await driver.executeScript("arguments[0].scrollIntoView({block: 'nearest', inline: 'nearest'});", targetElement);
+            await driver.sleep(200);
 
             const actions = driver.actions({ bridge: true });
             await actions.dragAndDrop(sourceElement, targetElement).perform();
