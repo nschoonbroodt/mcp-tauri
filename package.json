@@ -1,6 +1,6 @@
 {
   "name": "mcp-tauri-webdriver",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tauri WebDriver MCP Server",
   "type": "module",
   "main": "src/lib/server.js",
