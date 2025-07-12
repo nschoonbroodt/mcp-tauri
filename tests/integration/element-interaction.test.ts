@@ -378,4 +378,101 @@ describe('Element Interaction', () => {
             await client.callTool('close_session', {});
         }, 30000);
     });
+
+    describe('Find Multiple Elements', () => {
+        it('should find multiple elements by class', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to page with multiple elements
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-locators.html'
+            });
+
+            // Find multiple elements by class
+            const elementsResult = await client.callTool('find_elements', {
+                by: 'class',
+                value: 'btn'
+            });
+            expect(elementsResult.content[0].text).toContain('Found');
+            expect(elementsResult.content[0].text).toContain('elements');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should find multiple elements by tag name', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to page with multiple elements
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-locators.html'
+            });
+
+            // Find multiple button elements
+            const buttonsResult = await client.callTool('find_elements', {
+                by: 'css',
+                value: 'button'
+            });
+            expect(buttonsResult.content[0].text).toContain('Found');
+            expect(buttonsResult.content[0].text).toContain('elements');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should find multiple elements with xpath', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to page with multiple elements
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-locators.html'
+            });
+
+            // Find multiple elements with xpath
+            const xpathResult = await client.callTool('find_elements', {
+                by: 'xpath',
+                value: '//button'
+            });
+            expect(xpathResult.content[0].text).toContain('Found');
+            expect(xpathResult.content[0].text).toContain('elements');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should handle no elements found', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to page with multiple elements
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-locators.html'
+            });
+
+            // Try to find non-existent elements
+            const noElementsResult = await client.callTool('find_elements', {
+                by: 'class',
+                value: 'non-existent-class'
+            });
+            expect(noElementsResult.content[0].text).toContain('Found 0 elements');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+    });
 });

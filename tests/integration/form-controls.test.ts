@@ -486,4 +486,112 @@ describe('Form Controls', () => {
             await client.callTool('close_session', {});
         }, 30000);
     });
+
+    describe('Form Submission', () => {
+        it('should submit a form using submit button', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to form controls page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-form-controls.html'
+            });
+
+            // Submit the form using submit button
+            const submitResult = await client.callTool('submit_element', {
+                by: 'id',
+                value: 'submit-btn'
+            });
+            expect(submitResult.content[0].text).toContain('Element submitted');
+
+            // Verify form was submitted by checking status text
+            const statusText = await client.callTool('get_element_text', {
+                by: 'id',
+                value: 'form-status'
+            });
+            expect(statusText.content[0].text).toContain('submitted successfully');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should submit a form using the form element itself', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to form controls page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-form-controls.html'
+            });
+
+            // Submit the form using the form element
+            const submitResult = await client.callTool('submit_element', {
+                by: 'id',
+                value: 'simple-form'
+            });
+            expect(submitResult.content[0].text).toContain('Element submitted');
+
+            // Verify form was submitted by checking status text
+            const statusText = await client.callTool('get_element_text', {
+                by: 'id',
+                value: 'simple-status'
+            });
+            expect(statusText.content[0].text).toContain('submitted successfully');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should submit form using input submit element', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to form controls page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-form-controls.html'
+            });
+
+            // Submit using the input submit element
+            const submitResult = await client.callTool('submit_element', {
+                by: 'id',
+                value: 'simple-submit'
+            });
+            expect(submitResult.content[0].text).toContain('Element submitted');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should handle error when element is not submittable', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to form controls page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-form-controls.html'
+            });
+
+            // Try to submit a non-form element (heading)
+            const submitResult = await client.callTool('submit_element', {
+                by: 'css',
+                value: 'h1' // This is a heading, not submittable
+            });
+            expect(submitResult.content[0].text).toContain('Error submitting element');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+    });
 });

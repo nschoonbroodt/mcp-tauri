@@ -4,14 +4,41 @@
     <title>Locator Test Page</title>
 </head>
 <body>
-    <button id="id-btn">By ID</button>
-    <button class="class-btn">By Class</button>
-    <button name="name-btn">By Name</button>
+    <h1>Locator Test Page</h1>
+    
+    <!-- Buttons with multiple classes for find_elements testing -->
+    <button id="id-btn" class="btn primary">By ID</button>
+    <button class="class-btn">Original Class Button</button>
+    <button class="btn secondary">By Class 1</button>
+    <button class="btn success">By Class 2</button>
+    <button class="btn warning">By Class 3</button>
+    <button name="name-btn" class="btn">By Name</button>
+    
+    <!-- Links -->
     <a href="#test">Link Text</a>
     <a href="#partial">This is a partial link text example</a>
-    <div class="test-div">Test Content</div>
+    
+    <!-- Multiple divs for testing -->
+    <div class="test-div">Test Content 1</div>
+    <div class="test-div">Test Content 2</div>
+    <div class="test-div">Test Content 3</div>
+    
+    <!-- Various elements for XPath testing -->
     <div>
         <span data-testid="xpath-target">XPath Target</span>
+        <span class="highlight">Another span</span>
     </div>
+    
+    <!-- List items for multiple element testing -->
+    <ul>
+        <li class="list-item">Item 1</li>
+        <li class="list-item">Item 2</li>
+        <li class="list-item">Item 3</li>
+        <li class="list-item">Item 4</li>
+    </ul>
+    
+    <!-- Paragraphs -->
+    <p class="text-content">Paragraph 1</p>
+    <p class="text-content">Paragraph 2</p>
 </body>
 </html>

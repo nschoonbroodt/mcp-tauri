@@ -76,6 +76,38 @@
         <p>Large: <span id="large-value">None</span></p>
     </div>
     
+    <!-- Form Submission Tests -->
+    <h2>Form Submission</h2>
+    <form id="test-form" action="#" method="post">
+        <div>
+            <label for="form-name">Name:</label>
+            <input type="text" id="form-name" name="name" value="Test User">
+        </div>
+        <div>
+            <label for="form-email">Email:</label>
+            <input type="email" id="form-email" name="email" value="test@example.com">
+        </div>
+        <div>
+            <label for="form-message">Message:</label>
+            <textarea id="form-message" name="message">Test message</textarea>
+        </div>
+        <div>
+            <button type="submit" id="submit-btn">Submit Form</button>
+            <button type="reset" id="reset-btn">Reset Form</button>
+        </div>
+    </form>
+    
+    <div id="form-status">Form not submitted</div>
+    
+    <!-- Simple Form for Testing -->
+    <h2>Simple Form</h2>
+    <form id="simple-form" action="#" method="get">
+        <input type="text" id="simple-input" name="query" placeholder="Search query">
+        <input type="submit" id="simple-submit" value="Search">
+    </form>
+    
+    <div id="simple-status">Simple form not submitted</div>
+    
     <script>
         // Update display when selections change
         function updateSelections() {
@@ -115,6 +147,19 @@
         
         // Initialize display
         updateSelections();
+        
+        // Handle form submissions
+        document.getElementById('test-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('form-status').textContent = 'Form submitted successfully!';
+            console.log('Test form submitted');
+        });
+        
+        document.getElementById('simple-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('simple-status').textContent = 'Simple form submitted successfully!';
+            console.log('Simple form submitted');
+        });
     </script>
 </body>
 </html>

@@ -846,11 +846,10 @@ server.tool(
     {
         ...locatorSchema
     },
-    async ({ by, value, timeout = 10000 }) => {
+    async ({ by, value }) => {
         try {
             const driver = getDriver();
             const locator = getLocator(by, value);
-            await driver.wait(until.elementLocated(locator), timeout);
             const elements = await driver.findElements(locator);
             return {
                 content: [{ type: 'text', text: `Found ${elements.length} elements` }]

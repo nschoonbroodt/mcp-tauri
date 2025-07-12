@@ -212,6 +212,96 @@ describe('Element Properties', () => {
         }, 30000);
     });
 
+    describe('Element Properties', () => {
+        it('should get form element properties', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to element properties page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-element-properties.html'
+            });
+
+            // Get input value property
+            const valueResult = await client.callTool('get_element_property', {
+                by: 'id',
+                value: 'text-input',
+                property: 'value'
+            });
+            expect(valueResult.content[0].text).toContain("Property 'value':");
+
+            // Get checkbox checked property
+            const checkedResult = await client.callTool('get_element_property', {
+                by: 'id',
+                value: 'checked-box',
+                property: 'checked'
+            });
+            expect(checkedResult.content[0].text).toContain("Property 'checked': true");
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should get element state properties', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to element properties page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-element-properties.html'
+            });
+
+            // Get disabled property
+            const disabledResult = await client.callTool('get_element_property', {
+                by: 'id',
+                value: 'disabled-btn',
+                property: 'disabled'
+            });
+            expect(disabledResult.content[0].text).toContain("Property 'disabled': true");
+
+            // Get enabled property (should be false for disabled button)
+            const enabledResult = await client.callTool('get_element_property', {
+                by: 'id',
+                value: 'enabled-btn',
+                property: 'disabled'
+            });
+            expect(enabledResult.content[0].text).toContain("Property 'disabled': false");
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should handle non-existent properties', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to element properties page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-element-properties.html'
+            });
+
+            // Get non-existent property
+            const nonExistentResult = await client.callTool('get_element_property', {
+                by: 'id',
+                value: 'text-input',
+                property: 'nonExistentProperty'
+            });
+            expect(nonExistentResult.content[0].text).toContain("Property 'nonExistentProperty':");
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+    });
+
     describe('Element State', () => {
         it('should check if element is displayed', async () => {
             // Start app
