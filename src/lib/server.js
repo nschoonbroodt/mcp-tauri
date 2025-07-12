@@ -45,6 +45,48 @@ const getLocator = (by, value) => {
     }
 };
 
+const mapKeyToWebDriver = (keyName) => {
+    // Map common key names to WebDriver Key constants
+    const keyMap = {
+        'Enter': Key.ENTER,
+        'Return': Key.RETURN,
+        'Tab': Key.TAB,
+        'Escape': Key.ESCAPE,
+        'Space': Key.SPACE,
+        'Backspace': Key.BACK_SPACE,
+        'Delete': Key.DELETE,
+        'ArrowUp': Key.ARROW_UP,
+        'ArrowDown': Key.ARROW_DOWN,
+        'ArrowLeft': Key.ARROW_LEFT,
+        'ArrowRight': Key.ARROW_RIGHT,
+        'Home': Key.HOME,
+        'End': Key.END,
+        'PageUp': Key.PAGE_UP,
+        'PageDown': Key.PAGE_DOWN,
+        'Insert': Key.INSERT,
+        'F1': Key.F1,
+        'F2': Key.F2,
+        'F3': Key.F3,
+        'F4': Key.F4,
+        'F5': Key.F5,
+        'F6': Key.F6,
+        'F7': Key.F7,
+        'F8': Key.F8,
+        'F9': Key.F9,
+        'F10': Key.F10,
+        'F11': Key.F11,
+        'F12': Key.F12,
+        'Shift': Key.SHIFT,
+        'Control': Key.CONTROL,
+        'Alt': Key.ALT,
+        'Meta': Key.META,
+        'Command': Key.COMMAND
+    };
+    
+    // Return mapped key or original if no mapping exists (for regular characters)
+    return keyMap[keyName] || keyName;
+};
+
 const startTauriDriver = async (port = 4444) => {
     if (state.tauriDriver) {
         return; // already init
@@ -745,7 +787,8 @@ server.tool(
         try {
             const driver = getDriver();
             const actions = driver.actions({ bridge: true });
-            await actions.keyDown(key).keyUp(key).perform();
+            const mappedKey = mapKeyToWebDriver(key);
+            await actions.keyDown(mappedKey).keyUp(mappedKey).perform();
             return {
                 content: [{ type: 'text', text: `Key '${key}' pressed` }]
             };
@@ -1445,7 +1488,8 @@ server.tool(
         try {
             const driver = getDriver();
             const actions = driver.actions({ bridge: true });
-            await actions.keyDown(key).perform();
+            const mappedKey = mapKeyToWebDriver(key);
+            await actions.keyDown(mappedKey).perform();
             return {
                 content: [{ type: 'text', text: `Key down: ${key}` }]
             };
@@ -1472,7 +1516,8 @@ server.tool(
         try {
             const driver = getDriver();
             const actions = driver.actions({ bridge: true });
-            await actions.keyUp(key).perform();
+            const mappedKey = mapKeyToWebDriver(key);
+            await actions.keyUp(mappedKey).perform();
             return {
                 content: [{ type: 'text', text: `Key up: ${key}` }]
             };

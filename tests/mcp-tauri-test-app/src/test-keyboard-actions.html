@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keyboard Actions Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        input, textarea { margin: 5px; padding: 8px; }
+        .key-display { 
+            font-family: monospace; 
+            background: #f0f0f0; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ddd; 
+        }
+        .focused { background-color: #e6f3ff; }
+        .combo-result { 
+            background: #f9f9f9; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-left: 3px solid #007acc; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Keyboard Actions Testing</h1>
+    
+    <!-- Basic Key Press Testing -->
+    <div class="test-section">
+        <h2>Basic Key Press Testing</h2>
+        <input type="text" id="key-press-input" placeholder="Press keys here..." />
+        <div class="key-display">
+            Last key pressed: <span id="last-key">None</span>
+        </div>
+        <div class="key-display">
+            Key press count: <span id="key-count">0</span>
+        </div>
+        <button id="clear-key-log">Clear Log</button>
+    </div>
+    
+    <!-- Special Keys Testing -->
+    <div class="test-section">
+        <h2>Special Keys Testing</h2>
+        <textarea id="special-keys-area" rows="5" cols="50" placeholder="Test special keys like Tab, Enter, Escape here..."></textarea>
+        <div class="key-display">
+            Special key events: <span id="special-events">None</span>
+        </div>
+    </div>
+    
+    <!-- Key Combinations Testing -->
+    <div class="test-section">
+        <h2>Key Combinations (Ctrl, Shift, Alt)</h2>
+        <input type="text" id="combo-input" placeholder="Test key combinations here..." />
+        <div class="combo-result">
+            <div>Ctrl pressed: <span id="ctrl-status">No</span></div>
+            <div>Shift pressed: <span id="shift-status">No</span></div>
+            <div>Alt pressed: <span id="alt-status">No</span></div>
+            <div>Last combination: <span id="last-combo">None</span></div>
+        </div>
+    </div>
+    
+    <!-- Active Element Testing -->
+    <div class="test-section">
+        <h2>Active Element Testing</h2>
+        <p>Click on any input below to focus it, then use send_keys_active:</p>
+        <input type="text" id="active-test-1" placeholder="Input 1" />
+        <input type="text" id="active-test-2" placeholder="Input 2" />
+        <textarea id="active-test-3" rows="3" cols="30" placeholder="Textarea 3"></textarea>
+        <div class="key-display">
+            Currently focused: <span id="focused-element">None</span>
+        </div>
+        <div class="key-display">
+            Active element content: <span id="active-content">Empty</span>
+        </div>
+    </div>
+    
+    <!-- Navigation Keys Testing -->
+    <div class="test-section">
+        <h2>Navigation Keys Testing</h2>
+        <div>
+            <button id="nav-btn-1" tabindex="1">Button 1</button>
+            <button id="nav-btn-2" tabindex="2">Button 2</button>
+            <button id="nav-btn-3" tabindex="3">Button 3</button>
+            <button id="nav-btn-4" tabindex="4">Button 4</button>
+        </div>
+        <div class="key-display">
+            Currently focused button: <span id="focused-button">None</span>
+        </div>
+        <p>Use Tab/Shift+Tab or Arrow keys to navigate between buttons</p>
+    </div>
+    
+    <!-- Key Sequence Testing -->
+    <div class="test-section">
+        <h2>Key Sequence Testing</h2>
+        <input type="text" id="sequence-input" placeholder="Test key sequences here..." />
+        <div class="key-display">
+            Key sequence log: <div id="sequence-log">Empty</div>
+        </div>
+        <button id="clear-sequence">Clear Sequence</button>
+    </div>
+
+    <script>
+        let keyCount = 0;
+        let sequenceLog = [];
+        
+        // Basic key press tracking
+        document.getElementById('key-press-input').addEventListener('keydown', function(e) {
+            keyCount++;
+            document.getElementById('last-key').textContent = e.key;
+            document.getElementById('key-count').textContent = keyCount;
+        });
+        
+        // Clear key log
+        document.getElementById('clear-key-log').addEventListener('click', function() {
+            keyCount = 0;
+            document.getElementById('last-key').textContent = 'None';
+            document.getElementById('key-count').textContent = '0';
+        });
+        
+        // Special keys tracking
+        document.getElementById('special-keys-area').addEventListener('keydown', function(e) {
+            const specialKeys = ['Tab', 'Enter', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'];
+            if (specialKeys.includes(e.key)) {
+                const current = document.getElementById('special-events').textContent;
+                const newText = current === 'None' ? e.key : current + ', ' + e.key;
+                document.getElementById('special-events').textContent = newText;
+            }
+        });
+        
+        // Key combinations tracking
+        document.getElementById('combo-input').addEventListener('keydown', function(e) {
+            document.getElementById('ctrl-status').textContent = e.ctrlKey ? 'Yes' : 'No';
+            document.getElementById('shift-status').textContent = e.shiftKey ? 'Yes' : 'No';
+            document.getElementById('alt-status').textContent = e.altKey ? 'Yes' : 'No';
+            
+            if (e.ctrlKey || e.shiftKey || e.altKey) {
+                let combo = [];
+                if (e.ctrlKey) combo.push('Ctrl');
+                if (e.shiftKey) combo.push('Shift');
+                if (e.altKey) combo.push('Alt');
+                combo.push(e.key);
+                document.getElementById('last-combo').textContent = combo.join('+');
+            }
+        });
+        
+        // Active element tracking
+        const activeElements = ['active-test-1', 'active-test-2', 'active-test-3'];
+        activeElements.forEach(id => {
+            const element = document.getElementById(id);
+            element.addEventListener('focus', function() {
+                // Remove focused class from all elements
+                activeElements.forEach(otherId => {
+                    document.getElementById(otherId).classList.remove('focused');
+                });
+                // Add focused class to current element
+                this.classList.add('focused');
+                document.getElementById('focused-element').textContent = id;
+                updateActiveContent();
+            });
+            
+            element.addEventListener('input', updateActiveContent);
+        });
+        
+        function updateActiveContent() {
+            const focused = document.activeElement;
+            if (focused && activeElements.includes(focused.id)) {
+                document.getElementById('active-content').textContent = focused.value || 'Empty';
+            }
+        }
+        
+        // Navigation buttons tracking
+        const navButtons = ['nav-btn-1', 'nav-btn-2', 'nav-btn-3', 'nav-btn-4'];
+        navButtons.forEach(id => {
+            const button = document.getElementById(id);
+            button.addEventListener('focus', function() {
+                document.getElementById('focused-button').textContent = this.textContent;
+            });
+        });
+        
+        // Key sequence tracking
+        document.getElementById('sequence-input').addEventListener('keydown', function(e) {
+            sequenceLog.push({
+                key: e.key,
+                ctrl: e.ctrlKey,
+                shift: e.shiftKey,
+                alt: e.altKey,
+                timestamp: Date.now()
+            });
+            
+            // Keep only last 10 events
+            if (sequenceLog.length > 10) {
+                sequenceLog = sequenceLog.slice(-10);
+            }
+            
+            updateSequenceDisplay();
+        });
+        
+        function updateSequenceDisplay() {
+            const logDiv = document.getElementById('sequence-log');
+            if (sequenceLog.length === 0) {
+                logDiv.textContent = 'Empty';
+                return;
+            }
+            
+            const formatted = sequenceLog.map(event => {
+                let keyStr = event.key;
+                if (event.ctrl || event.shift || event.alt) {
+                    let modifiers = [];
+                    if (event.ctrl) modifiers.push('Ctrl');
+                    if (event.shift) modifiers.push('Shift');
+                    if (event.alt) modifiers.push('Alt');
+                    keyStr = modifiers.join('+') + '+' + event.key;
+                }
+                return keyStr;
+            }).join(' → ');
+            
+            logDiv.textContent = formatted;
+        }
+        
+        // Clear sequence log
+        document.getElementById('clear-sequence').addEventListener('click', function() {
+            sequenceLog = [];
+            updateSequenceDisplay();
+        });
+        
+        // Global focus tracking for debugging
+        document.addEventListener('focusin', function(e) {
+            console.log('Focused element:', e.target.id || e.target.tagName);
+        });
+        
+        // Prevent Tab from leaving the page in some sections
+        document.getElementById('combo-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault(); // Keep focus for testing
+            }
+        });
+    </script>
+</body>
+</html>
