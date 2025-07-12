@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mouse Actions Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        
+        /* Hover Styles */
+        .hover-button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        
+        .hover-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+        
+        .hover-div {
+            width: 200px;
+            height: 100px;
+            background-color: #e74c3c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .hover-div:hover {
+            background-color: #c0392b;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px;
+        }
+        
+        .tooltip {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip-container:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Double Click Styles */
+        .double-click-area {
+            width: 300px;
+            height: 100px;
+            background-color: #f39c12;
+            padding: 20px;
+            margin: 10px;
+            border: 2px solid #d68910;
+            user-select: none;
+        }
+        
+        .selectable-text {
+            padding: 10px;
+            margin: 10px;
+            background-color: #ecf0f1;
+            user-select: text;
+        }
+        
+        /* Right Click Styles */
+        .right-click-area {
+            width: 250px;
+            height: 100px;
+            background-color: #9b59b6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px;
+            position: relative;
+        }
+        
+        .context-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        
+        .context-menu-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        /* Drag and Drop Styles */
+        .drag-container {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .drag-source-area, .drop-target-area {
+            min-height: 150px;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            background-color: #f8f9fa;
+        }
+        
+        .drop-target-area {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        
+        .drop-target-area.drag-over {
+            background-color: #c8e6c9;
+            border-color: #2e7d32;
+        }
+        
+        .draggable-item {
+            width: 100px;
+            height: 50px;
+            margin: 5px;
+            padding: 10px;
+            background-color: #2196f3;
+            color: white;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+        
+        /* Status Display */
+        .status-display {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .action-counter {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mouse Actions Testing</h1>
+    
+    <!-- Hover Section -->
+    <section>
+        <h2>Hover Actions</h2>
+        <button id="hover-btn" class="hover-button">Hover over me!</button>
+        <div id="hover-status" class="status-display">Hover status: Not hovered</div>
+        
+        <div id="hover-div" class="hover-div">Hover to change color</div>
+        
+        <div class="tooltip-container">
+            <img id="hover-image" src="data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' fill='%23ccc'/%3E%3Ctext x='50' y='50' text-anchor='middle' dy='.3em'%3EHover Me%3C/text%3E%3C/svg%3E" alt="Hover for tooltip">
+            <span id="image-tooltip" class="tooltip">This is a tooltip!</span>
+        </div>
+    </section>
+    
+    <!-- Double Click Section -->
+    <section>
+        <h2>Double Click Actions</h2>
+        <div id="double-click-counter" class="action-counter">Double clicks: 0</div>
+        <button id="double-click-btn" class="hover-button">Double-click me!</button>
+        
+        <div id="double-click-area" class="double-click-area">
+            Double-click this area
+        </div>
+        
+        <div id="selectable-text" class="selectable-text">
+            This text can be selected by double-clicking on words. Try double-clicking on different words to select them.
+        </div>
+    </section>
+    
+    <!-- Right Click Section -->
+    <section>
+        <h2>Right Click Actions</h2>
+        <div id="right-click-counter" class="action-counter">Right clicks: 0</div>
+        
+        <div id="right-click-area" class="right-click-area">
+            Right-click for context menu
+        </div>
+        
+        <button id="right-click-btn" class="hover-button">Right-click me!</button>
+        
+        <div id="context-menu" class="context-menu">
+            <div class="context-menu-item" data-action="copy">Copy</div>
+            <div class="context-menu-item" data-action="paste">Paste</div>
+            <div class="context-menu-item" data-action="delete">Delete</div>
+        </div>
+        
+        <div id="right-click-status" class="status-display">Last action: None</div>
+    </section>
+    
+    <!-- Drag and Drop Section -->
+    <section>
+        <h2>Drag and Drop Actions</h2>
+        <div id="drag-status" class="status-display">Drag status: Ready</div>
+        
+        <div class="drag-container">
+            <div id="drag-source" class="drag-source-area">
+                <h3>Drag Source</h3>
+                <div id="drag-item-1" class="draggable-item" draggable="true">Item 1</div>
+                <div id="drag-item-2" class="draggable-item" draggable="true">Item 2</div>
+                <div id="drag-item-3" class="draggable-item" draggable="true">Item 3</div>
+                <div id="drag-item-special" class="draggable-item" draggable="true" style="background-color: #ff5722;">Special</div>
+            </div>
+            
+            <div id="drop-zone-1" class="drop-target-area">
+                <h3>Drop Zone 1</h3>
+                <div id="drop-count-1" class="action-counter">Items dropped: 0</div>
+            </div>
+            
+            <div id="drop-zone-2" class="drop-target-area">
+                <h3>Drop Zone 2</h3>
+                <div id="drop-count-2" class="action-counter">Items dropped: 0</div>
+            </div>
+        </div>
+        
+        <div id="drop-zone-3" class="drop-target-area" style="margin-top: 20px;">
+            <h3>Drop Zone 3 (Isolated)</h3>
+            <div id="drop-count-3" class="action-counter">Items dropped: 0</div>
+        </div>
+    </section>
+    
+    <script>
+        // Hover tracking
+        let hoverCount = 0;
+        const hoverBtn = document.getElementById('hover-btn');
+        const hoverStatus = document.getElementById('hover-status');
+        
+        hoverBtn.addEventListener('mouseenter', function() {
+            hoverCount++;
+            hoverStatus.textContent = `Hover status: Hovered (count: ${hoverCount})`;
+        });
+        
+        hoverBtn.addEventListener('mouseleave', function() {
+            hoverStatus.textContent = `Hover status: Not hovered (total hovers: ${hoverCount})`;
+        });
+        
+        // Double click tracking
+        let doubleClickCount = 0;
+        const doubleClickBtn = document.getElementById('double-click-btn');
+        const doubleClickArea = document.getElementById('double-click-area');
+        const doubleClickCounter = document.getElementById('double-click-counter');
+        
+        function handleDoubleClick(event) {
+            doubleClickCount++;
+            doubleClickCounter.textContent = `Double clicks: ${doubleClickCount}`;
+            event.target.style.backgroundColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+        }
+        
+        doubleClickBtn.addEventListener('dblclick', handleDoubleClick);
+        doubleClickArea.addEventListener('dblclick', handleDoubleClick);
+        
+        // Right click tracking
+        let rightClickCount = 0;
+        const rightClickArea = document.getElementById('right-click-area');
+        const rightClickBtn = document.getElementById('right-click-btn');
+        const rightClickCounter = document.getElementById('right-click-counter');
+        const rightClickStatus = document.getElementById('right-click-status');
+        const contextMenu = document.getElementById('context-menu');
+        
+        function handleRightClick(event) {
+            event.preventDefault();
+            rightClickCount++;
+            rightClickCounter.textContent = `Right clicks: ${rightClickCount}`;
+            
+            // Show context menu
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = event.pageX + 'px';
+            contextMenu.style.top = event.pageY + 'px';
+            
+            return false;
+        }
+        
+        rightClickArea.addEventListener('contextmenu', handleRightClick);
+        rightClickBtn.addEventListener('contextmenu', handleRightClick);
+        
+        // Hide context menu on click elsewhere
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.context-menu')) {
+                contextMenu.style.display = 'none';
+            }
+        });
+        
+        // Context menu actions
+        document.querySelectorAll('.context-menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const action = this.getAttribute('data-action');
+                rightClickStatus.textContent = `Last action: ${action}`;
+                contextMenu.style.display = 'none';
+            });
+        });
+        
+        // Drag and Drop
+        let draggedElement = null;
+        const dropCounts = { 1: 0, 2: 0, 3: 0 };
+        
+        document.querySelectorAll('.draggable-item').forEach(item => {
+            item.addEventListener('dragstart', function(e) {
+                draggedElement = this;
+                this.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', this.innerHTML);
+                document.getElementById('drag-status').textContent = `Drag status: Dragging ${this.textContent}`;
+            });
+            
+            item.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+                document.getElementById('drag-status').textContent = 'Drag status: Drag ended';
+            });
+        });
+        
+        document.querySelectorAll('.drop-target-area').forEach(zone => {
+            zone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                this.classList.add('drag-over');
+            });
+            
+            zone.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+            
+            zone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                if (draggedElement) {
+                    // Clone the element instead of moving it
+                    const clone = draggedElement.cloneNode(true);
+                    
+                    // Re-attach drag event listeners to the clone
+                    clone.addEventListener('dragstart', function(e) {
+                        draggedElement = this;
+                        this.classList.add('dragging');
+                        e.dataTransfer.effectAllowed = 'move';
+                        e.dataTransfer.setData('text/html', this.innerHTML);
+                        document.getElementById('drag-status').textContent = `Drag status: Dragging ${this.textContent}`;
+                    });
+                    
+                    clone.addEventListener('dragend', function() {
+                        this.classList.remove('dragging');
+                        document.getElementById('drag-status').textContent = 'Drag status: Drag ended';
+                    });
+                    
+                    this.appendChild(clone);
+                    
+                    // Update drop count
+                    const zoneId = this.id.split('-').pop();
+                    dropCounts[zoneId]++;
+                    document.getElementById(`drop-count-${zoneId}`).textContent = `Items dropped: ${dropCounts[zoneId]}`;
+                    document.getElementById('drag-status').textContent = `Drag status: Dropped ${draggedElement.textContent} in Zone ${zoneId}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

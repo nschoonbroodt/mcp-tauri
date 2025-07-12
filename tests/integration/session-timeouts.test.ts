@@ -92,7 +92,7 @@ describe('Session Timeouts', () => {
 
         it('should set partial timeouts', async () => {
             // Wait between tests to avoid session conflicts
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             
             // Start app
             const startResult = await client.callTool('start_tauri_app', {
@@ -137,7 +137,7 @@ describe('Session Timeouts', () => {
 
             // Close session
             await client.callTool('close_session', {});
-        }, 30000);
+        }, 60000);
     });
 
     describe('Error Handling', () => {

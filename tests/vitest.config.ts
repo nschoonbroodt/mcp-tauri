@@ -6,12 +6,12 @@ export default defineConfig({
         environment: 'node',
         testTimeout: 60000,
         hookTimeout: 60000,
-        //globalSetup: './tests/globalSetup.ts',
+        globalSetup: './tests/globalSetup.ts',
         pool: 'forks',
         poolOptions: {
             forks: {
                 singleFork: true
             }
-        }
+        },
     },
 });

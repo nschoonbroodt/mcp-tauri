@@ -654,6 +654,15 @@ server.tool(
             const sourceElement = await driver.wait(until.elementLocated(sourceLocator), timeout);
             const targetElement = await driver.wait(until.elementLocated(targetLocator), timeout);
 
+            await driver.wait(until.elementIsVisible(sourceElement), timeout);
+            await driver.wait(until.elementIsVisible(targetElement), timeout);
+
+            // Scroll elements into view
+            await driver.executeScript("arguments[0].scrollIntoView(true);", sourceElement);
+            await driver.sleep(100);
+            await driver.executeScript("arguments[0].scrollIntoView(true);", targetElement);
+            await driver.sleep(100);
+
             const actions = driver.actions({ bridge: true });
             await actions.dragAndDrop(sourceElement, targetElement).perform();
 
@@ -662,7 +671,7 @@ server.tool(
             };
         } catch (e) {
             return {
-                content: [{ type: 'text', text: `Error performing drag and drop: ${e.message}` }]
+                content: [{ type: 'text', text: `Error performing drag and drop: ${e.message || e.toString()}` }]
             };
         }
     }
@@ -679,6 +688,11 @@ server.tool(
             const driver = getDriver();
             const locator = getLocator(by, value);
             const element = await driver.wait(until.elementLocated(locator), timeout);
+            await driver.wait(until.elementIsVisible(element), timeout);
+            // Scroll element into view
+            await driver.executeScript("arguments[0].scrollIntoView(true);", element);
+            // Small delay to ensure element is ready
+            await driver.sleep(100);
             const actions = driver.actions({ bridge: true });
             await actions.doubleClick(element).perform();
             return {
@@ -686,7 +700,7 @@ server.tool(
             };
         } catch (e) {
             return {
-                content: [{ type: 'text', text: `Error performing double click: ${e.message}` }]
+                content: [{ type: 'text', text: `Error performing double click: ${e.message || e.toString()}` }]
             };
         }
     }
@@ -703,6 +717,11 @@ server.tool(
             const driver = getDriver();
             const locator = getLocator(by, value);
             const element = await driver.wait(until.elementLocated(locator), timeout);
+            await driver.wait(until.elementIsVisible(element), timeout);
+            // Scroll element into view
+            await driver.executeScript("arguments[0].scrollIntoView(true);", element);
+            // Small delay to ensure element is ready
+            await driver.sleep(100);
             const actions = driver.actions({ bridge: true });
             await actions.contextClick(element).perform();
             return {
