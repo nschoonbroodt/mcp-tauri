@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
 import { MCPTestClient } from 'mcp-test-client';
 import path from 'path';
 
@@ -23,6 +23,16 @@ describe('Scroll Actions', () => {
     afterAll(async () => {
         // Clean up
         await client.cleanup();
+    });
+
+    afterEach(async () => {
+        // Ensure session is closed after each test, even if test fails
+        try {
+            await client.callTool('close_session', {});
+        } catch (e) {
+            // Ignore errors if session was already closed or doesn't exist
+            console.log('Session cleanup in afterEach:', e.message);
+        }
     });
 
     describe('Basic Scroll Operations', () => {
