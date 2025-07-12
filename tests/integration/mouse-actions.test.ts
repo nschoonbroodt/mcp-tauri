@@ -539,4 +539,165 @@ describe('Mouse Actions', () => {
             await client.callTool('close_session', {});
         }, 30000);
     });
+
+    describe('Advanced Mouse Actions', () => {
+        it('should click and hold then release on an element', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to mouse actions page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-mouse-actions.html'
+            });
+
+            // Click and hold on a button
+            const holdResult = await client.callTool('click_and_hold', {
+                by: 'id',
+                value: 'hold-button'
+            });
+            expect(holdResult.content[0].text).toContain('Mouse button held down on element');
+
+            // Wait a moment to simulate holding
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Release the mouse button
+            const releaseResult = await client.callTool('release', {});
+            expect(releaseResult.content[0].text).toContain('Mouse button released');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should click and hold for drag simulation', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to mouse actions page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-mouse-actions.html'
+            });
+
+            // Click and hold on draggable item
+            const holdResult = await client.callTool('click_and_hold', {
+                by: 'id',
+                value: 'drag-item-1'
+            });
+            expect(holdResult.content[0].text).toContain('Mouse button held down on element');
+
+            // Move by offset to simulate drag
+            const moveResult = await client.callTool('move_by_offset', {
+                x: 100,
+                y: 50
+            });
+            expect(moveResult.content[0].text).toContain('Mouse moved by offset x=100, y=50');
+
+            // Release to complete the drag
+            const releaseResult = await client.callTool('release', {});
+            expect(releaseResult.content[0].text).toContain('Mouse button released');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should move mouse by various offsets', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to mouse actions page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-mouse-actions.html'
+            });
+
+            // Move mouse right and down
+            const move1Result = await client.callTool('move_by_offset', {
+                x: 50,
+                y: 30
+            });
+            expect(move1Result.content[0].text).toContain('Mouse moved by offset x=50, y=30');
+
+            // Move mouse left and up
+            const move2Result = await client.callTool('move_by_offset', {
+                x: -25,
+                y: -15
+            });
+            expect(move2Result.content[0].text).toContain('Mouse moved by offset x=-25, y=-15');
+
+            // Move mouse with zero offset (should work)
+            const move3Result = await client.callTool('move_by_offset', {
+                x: 0,
+                y: 0
+            });
+            expect(move3Result.content[0].text).toContain('Mouse moved by offset x=0, y=0');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should handle mouse state errors correctly', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to mouse actions page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-mouse-actions.html'
+            });
+
+            // Try to release without holding (should still work in WebDriver)
+            const releaseResult = await client.callTool('release', {});
+            expect(releaseResult.content[0].text).toContain('Mouse button released');
+
+            // Try to click and hold on non-existent element
+            const holdResult = await client.callTool('click_and_hold', {
+                by: 'id',
+                value: 'non-existent-element'
+            });
+            expect(holdResult.content[0].text).toContain('Error clicking and holding');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should combine mouse actions in sequence', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to mouse actions page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-mouse-actions.html'
+            });
+
+            // Complex sequence: hold, move multiple times, then release
+            await client.callTool('click_and_hold', {
+                by: 'id',
+                value: 'drag-item-2'
+            });
+
+            // Move in a pattern
+            await client.callTool('move_by_offset', { x: 20, y: 0 });
+            await client.callTool('move_by_offset', { x: 0, y: 20 });
+            await client.callTool('move_by_offset', { x: -10, y: -10 });
+            
+            // Final release
+            const releaseResult = await client.callTool('release', {});
+            expect(releaseResult.content[0].text).toContain('Mouse button released');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+    });
 });

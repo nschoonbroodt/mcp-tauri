@@ -258,6 +258,23 @@
         </div>
     </section>
     
+    <!-- Advanced Mouse Actions Section -->
+    <section>
+        <h2>Advanced Mouse Actions</h2>
+        <div id="hold-status" class="status-display">Hold status: Ready</div>
+        
+        <button id="hold-button" class="hover-button">Hold me down!</button>
+        <div id="mouse-position" class="status-display">Mouse position: Unknown</div>
+        
+        <div id="hold-test-area" class="right-click-area" style="margin: 20px 0;">
+            Click and hold area for testing mouse state
+        </div>
+        
+        <div id="movement-tracker" class="status-display">
+            Mouse movements: <span id="movement-count">0</span>
+        </div>
+    </section>
+    
     <script>
         // Hover tracking
         let hoverCount = 0;
@@ -389,6 +406,41 @@
                     document.getElementById('drag-status').textContent = `Drag status: Dropped ${draggedElement.textContent} in Zone ${zoneId}`;
                 }
             });
+        });
+
+        // Advanced Mouse Actions tracking
+        let movementCount = 0;
+        const holdButton = document.getElementById('hold-button');
+        const holdStatus = document.getElementById('hold-status');
+        const mousePosition = document.getElementById('mouse-position');
+        const movementTracker = document.getElementById('movement-count');
+        
+        // Track mouse down/up events
+        holdButton.addEventListener('mousedown', function() {
+            holdStatus.textContent = 'Hold status: Button held down';
+        });
+        
+        holdButton.addEventListener('mouseup', function() {
+            holdStatus.textContent = 'Hold status: Button released';
+        });
+        
+        // Track mouse movement
+        document.addEventListener('mousemove', function(e) {
+            movementCount++;
+            mousePosition.textContent = `Mouse position: (${e.clientX}, ${e.clientY})`;
+            movementTracker.textContent = movementCount;
+        });
+        
+        // Track mouse events on hold test area
+        const holdTestArea = document.getElementById('hold-test-area');
+        holdTestArea.addEventListener('mousedown', function() {
+            this.style.backgroundColor = '#2c3e50';
+            holdStatus.textContent = 'Hold status: Area pressed';
+        });
+        
+        holdTestArea.addEventListener('mouseup', function() {
+            this.style.backgroundColor = '';
+            holdStatus.textContent = 'Hold status: Area released';
         });
     </script>
 </body>
