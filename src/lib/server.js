@@ -8,12 +8,13 @@ import path from "path";
 const { Builder, By, Key, until, Actions, Capabilities } = pkg;
 import os from 'os';
 import { spawn } from "child_process";
+import packageJson from '../../package.json' with { type: 'json' };
 
-// Create an MCP server
 const server = new McpServer({
     name: "MCP Tauri",
-    version: "0.1.0"
+    version: packageJson.version
 });
+
 
 // Server state
 const state = {
@@ -82,7 +83,7 @@ const mapKeyToWebDriver = (keyName) => {
         'Meta': Key.META,
         'Command': Key.COMMAND
     };
-    
+
     // Return mapped key or original if no mapping exists (for regular characters)
     return keyMap[keyName] || keyName;
 };
@@ -703,7 +704,7 @@ server.tool(
             // First, scroll source element to center of viewport
             await driver.executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", sourceElement);
             await driver.sleep(200);
-            
+
             // Then scroll target element, but keep source visible if possible
             await driver.executeScript("arguments[0].scrollIntoView({block: 'nearest', inline: 'nearest'});", targetElement);
             await driver.sleep(200);
