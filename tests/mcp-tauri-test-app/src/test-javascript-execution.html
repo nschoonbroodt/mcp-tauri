@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Execution Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .test-section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .result-display {
+            padding: 10px;
+            background-color: #e8f5e9;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            min-height: 30px;
+        }
+        
+        .data-element {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+        
+        .counter-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2196f3;
+            margin: 10px 0;
+        }
+        
+        .async-status {
+            padding: 10px;
+            background-color: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .test-button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .test-button:hover {
+            background-color: #1976d2;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error-output {
+            color: #f44336;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Execution Testing</h1>
+    
+    <!-- Synchronous Script Execution Section -->
+    <section class="test-section">
+        <h2>Synchronous Script Execution</h2>
+        
+        <div id="sync-result" class="result-display">
+            Result will appear here
+        </div>
+        
+        <div id="counter-display" class="counter-display">
+            Counter: <span id="counter-value">0</span>
+        </div>
+        
+        <div id="data-container" class="data-element" data-test-value="initial-value" data-number="42">
+            Data Element (data-test-value="initial-value", data-number="42")
+        </div>
+        
+        <div id="computed-value" class="data-element">
+            <span id="width-value">Width: Unknown</span> | 
+            <span id="height-value">Height: Unknown</span>
+        </div>
+        
+        <button id="test-button" class="test-button">Test Button</button>
+        
+        <div id="hidden-element" class="hidden">
+            This element is hidden
+        </div>
+        
+        <div id="error-output" class="error-output hidden">
+            Error messages will appear here
+        </div>
+    </section>
+    
+    <!-- Asynchronous Script Execution Section -->
+    <section class="test-section">
+        <h2>Asynchronous Script Execution</h2>
+        
+        <div id="async-status" class="async-status">
+            Status: <span id="async-status-text">Ready</span>
+        </div>
+        
+        <div id="async-result" class="result-display">
+            Async result will appear here
+        </div>
+        
+        <div id="timer-display" class="data-element">
+            Timer: <span id="timer-value">Not started</span>
+        </div>
+        
+        <div id="promise-result" class="data-element">
+            Promise result: <span id="promise-value">Not resolved</span>
+        </div>
+        
+        <div id="callback-result" class="data-element">
+            Callback result: <span id="callback-value">Not called</span>
+        </div>
+    </section>
+    
+    <!-- Complex DOM Manipulation Section -->
+    <section class="test-section">
+        <h2>Complex DOM Manipulation</h2>
+        
+        <ul id="dynamic-list">
+            <li class="list-item">Item 1</li>
+            <li class="list-item">Item 2</li>
+            <li class="list-item">Item 3</li>
+        </ul>
+        
+        <div id="element-collection" class="data-element">
+            <span class="test-span">Span 1</span>
+            <span class="test-span">Span 2</span>
+            <span class="test-span">Span 3</span>
+        </div>
+        
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Row 1</td>
+                    <td class="table-value">100</td>
+                </tr>
+                <tr>
+                    <td>Row 2</td>
+                    <td class="table-value">200</td>
+                </tr>
+                <tr>
+                    <td>Row 3</td>
+                    <td class="table-value">300</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    
+    <!-- Global Variables Section -->
+    <section class="test-section">
+        <h2>Global Variables & Functions</h2>
+        
+        <div id="global-var-display" class="result-display">
+            Global variable values will appear here
+        </div>
+        
+        <div id="function-result" class="result-display">
+            Function results will appear here
+        </div>
+    </section>
+    
+    <script>
+        // Global variables for testing
+        window.testGlobalVar = 'Hello from global scope';
+        window.testCounter = 0;
+        window.testArray = [1, 2, 3, 4, 5];
+        window.testObject = {
+            name: 'Test Object',
+            value: 42,
+            nested: {
+                deepValue: 'Deep nested value'
+            }
+        };
+        
+        // Global functions for testing
+        window.testFunction = function(a, b) {
+            return a + b;
+        };
+        
+        window.testAsyncFunction = function(delay) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(`Resolved after ${delay}ms`);
+                }, delay);
+            });
+        };
+        
+        window.testCallbackFunction = function(callback, delay) {
+            setTimeout(() => {
+                callback(`Callback executed after ${delay}ms`);
+            }, delay);
+        };
+        
+        // Helper function to simulate async operations
+        window.simulateAsyncOperation = function(duration, value) {
+            return new Promise((resolve, reject) => {
+                if (duration < 0) {
+                    reject(new Error('Duration must be positive'));
+                } else {
+                    setTimeout(() => {
+                        resolve(value);
+                    }, duration);
+                }
+            });
+        };
+        
+        // Function to calculate sum of table values
+        window.calculateTableSum = function() {
+            const values = document.querySelectorAll('.table-value');
+            let sum = 0;
+            values.forEach(cell => {
+                sum += parseInt(cell.textContent);
+            });
+            return sum;
+        };
+        
+        // Function to get element dimensions
+        window.getElementDimensions = function(selector) {
+            const element = document.querySelector(selector);
+            if (!element) return null;
+            const rect = element.getBoundingClientRect();
+            return {
+                width: Math.round(rect.width),
+                height: Math.round(rect.height),
+                top: Math.round(rect.top),
+                left: Math.round(rect.left)
+            };
+        };
+        
+        // Error testing function
+        window.throwTestError = function(message) {
+            throw new Error(message || 'Test error');
+        };
+        
+        // Counter increment function
+        window.incrementCounter = function() {
+            window.testCounter++;
+            document.getElementById('counter-value').textContent = window.testCounter;
+            return window.testCounter;
+        };
+    </script>
+</body>
+</html>
