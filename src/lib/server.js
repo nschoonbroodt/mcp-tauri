@@ -1380,6 +1380,11 @@ server.tool(
             const driver = getDriver();
             const locator = getLocator(by, value);
             const element = await driver.wait(until.elementLocated(locator), timeout);
+            await driver.wait(until.elementIsVisible(element), timeout);
+            // Scroll element into view
+            await driver.executeScript("arguments[0].scrollIntoView(true);", element);
+            // Small delay to ensure element is ready
+            await driver.sleep(100);
             const actions = driver.actions({ bridge: true });
             await actions.move({ origin: element }).press().perform();
             return {
