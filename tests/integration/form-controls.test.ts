@@ -132,7 +132,7 @@ describe('Form Controls', () => {
             await client.callTool('close_session', {});
         }, 30000);
 
-        it('should handle error when text not found', async () => {
+        it('should handle error when text not found with improved error message', async () => {
             // Start app
             const startResult = await client.callTool('start_tauri_app', {
                 application: TEST_APP_PATH,
@@ -150,8 +150,60 @@ describe('Form Controls', () => {
                 value: 'single-select',
                 text: 'Non-existent Option'
             });
-            // Should succeed but option won't actually be selected (no error in JavaScript)
-            expect(selectResult.content[0].text).toContain('Selected option with text: Non-existent Option');
+            // Should now show available options in error message
+            expect(selectResult.content[0].text).toContain('No option matching \'Non-existent Option\' found');
+            expect(selectResult.content[0].text).toContain('Available options:');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+
+        it('should select option with partial text matching', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to form controls page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-form-controls.html'
+            });
+
+            // Select using partial match
+            const selectResult = await client.callTool('select_by_visible_text', {
+                by: 'id',
+                value: 'single-select',
+                text: 'First',
+                partial: true
+            });
+            expect(selectResult.content[0].text).toContain('Selected option with text:');
+
+            // Close session
+            await client.callTool('close_session', {});
+        }, 30000);
+    });
+
+    describe('Select by Contains Text', () => {
+        it('should select option using case-insensitive partial matching', async () => {
+            // Start app
+            const startResult = await client.callTool('start_tauri_app', {
+                application: TEST_APP_PATH,
+            });
+            expect(startResult.content[0].text).toContain('Started tauri-driver');
+
+            // Navigate to form controls page
+            await client.callTool('navigate', {
+                url: 'tauri://localhost/test-form-controls.html'
+            });
+
+            // Select using contains text (case-insensitive)
+            const selectResult = await client.callTool('select_by_contains_text', {
+                by: 'id',
+                value: 'single-select',
+                text: 'first'
+            });
+            expect(selectResult.content[0].text).toContain('Selected option with text:');
 
             // Close session
             await client.callTool('close_session', {});

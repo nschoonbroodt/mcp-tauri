@@ -1307,30 +1307,122 @@ server.tool(
     "selects an option from a dropdown by visible text",
     {
         ...locatorSchema,
-        text: z.string().describe("Visible text of the option to select")
+        text: z.string().describe("Visible text of the option to select"),
+        partial: z.boolean().optional().describe("Enable partial text matching (default: false)")
+    },
+    async ({ by, value, text, partial = false, timeout = 10000 }) => {
+        try {
+            const driver = getDriver();
+            const locator = getLocator(by, value);
+            const element = await driver.wait(until.elementLocated(locator), timeout);
+            
+            const result = await driver.executeScript(`
+                const select = arguments[0];
+                const searchText = arguments[1];
+                const partialMatch = arguments[2];
+                const options = select.options;
+                const availableOptions = [];
+                let foundIndex = -1;
+                
+                for (let i = 0; i < options.length; i++) {
+                    const optionText = options[i].text;
+                    availableOptions.push(optionText);
+                    
+                    let matches = false;
+                    if (partialMatch) {
+                        matches = optionText.toLowerCase().includes(searchText.toLowerCase());
+                    } else {
+                        matches = optionText === searchText;
+                    }
+                    
+                    if (matches && foundIndex === -1) {
+                        foundIndex = i;
+                    }
+                }
+                
+                if (foundIndex !== -1) {
+                    select.selectedIndex = foundIndex;
+                    select.dispatchEvent(new Event('change'));
+                    return { success: true, selectedText: options[foundIndex].text };
+                } else {
+                    return { success: false, availableOptions: availableOptions };
+                }
+            `, element, text, partial);
+            
+            if (result.success) {
+                return {
+                    content: [{ type: 'text', text: `Selected option with text: ${result.selectedText}` }]
+                };
+            } else {
+                const matchType = partial ? 'containing' : 'matching';
+                const availableText = result.availableOptions.length > 0 
+                    ? `Available options: [${result.availableOptions.map(opt => `'${opt}'`).join(', ')}]`
+                    : 'No options available';
+                return {
+                    content: [{ type: 'text', text: `No option ${matchType} '${text}' found. ${availableText}` }]
+                };
+            }
+        } catch (e) {
+            return {
+                content: [{ type: 'text', text: `Error selecting by visible text: ${e.message}` }]
+            };
+        }
+    }
+);
+
+server.tool(
+    "select_by_contains_text",
+    "selects an option from a dropdown by partial, case-insensitive text matching",
+    {
+        ...locatorSchema,
+        text: z.string().describe("Text that should be contained in the option (case-insensitive)")
     },
     async ({ by, value, text, timeout = 10000 }) => {
         try {
             const driver = getDriver();
             const locator = getLocator(by, value);
             const element = await driver.wait(until.elementLocated(locator), timeout);
-            await driver.executeScript(`
+            
+            const result = await driver.executeScript(`
                 const select = arguments[0];
+                const searchText = arguments[1].toLowerCase();
                 const options = select.options;
+                const availableOptions = [];
+                let foundIndex = -1;
+                
                 for (let i = 0; i < options.length; i++) {
-                    if (options[i].text === arguments[1]) {
-                        select.selectedIndex = i;
-                        select.dispatchEvent(new Event('change'));
-                        break;
+                    const optionText = options[i].text;
+                    availableOptions.push(optionText);
+                    
+                    if (optionText.toLowerCase().includes(searchText) && foundIndex === -1) {
+                        foundIndex = i;
                     }
                 }
+                
+                if (foundIndex !== -1) {
+                    select.selectedIndex = foundIndex;
+                    select.dispatchEvent(new Event('change'));
+                    return { success: true, selectedText: options[foundIndex].text };
+                } else {
+                    return { success: false, availableOptions: availableOptions };
+                }
             `, element, text);
-            return {
-                content: [{ type: 'text', text: `Selected option with text: ${text}` }]
-            };
+            
+            if (result.success) {
+                return {
+                    content: [{ type: 'text', text: `Selected option with text: ${result.selectedText}` }]
+                };
+            } else {
+                const availableText = result.availableOptions.length > 0 
+                    ? `Available options: [${result.availableOptions.map(opt => `'${opt}'`).join(', ')}]`
+                    : 'No options available';
+                return {
+                    content: [{ type: 'text', text: `No option containing '${text}' found. ${availableText}` }]
+                };
+            }
         } catch (e) {
             return {
-                content: [{ type: 'text', text: `Error selecting by visible text: ${e.message}` }]
+                content: [{ type: 'text', text: `Error selecting by contains text: ${e.message}` }]
             };
         }
     }
